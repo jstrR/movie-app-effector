@@ -5,11 +5,22 @@ import CommentsInput from "../../common/commentsInput/CommentsInput";
 import CommentsAuth from "../../common/commentsAuth/CommentsAuth";
 import CommentsDisplay from "../../common/commentsDisplay/CommentsDisplay";
 
-const Comments = ({ commentsStack }) => {
-  const isAuthenticated = useSelector(
-    state => state.auth.isAuthenticated,
-    shallowEqual
-  );
+interface ICommentsProps {
+  commentsStack?: Array<{ author: string; date: string; message: string }>;
+}
+
+interface ILoggedStatus {
+  auth: {
+    isAuthenticated: boolean;
+  };
+}
+
+const Comments: React.FC<ICommentsProps> = ({ commentsStack }) => {
+  const selectIsAuthenticated = (state: ILoggedStatus) => {
+    return state.auth.isAuthenticated;
+  };
+
+  const isAuthenticated = useSelector(selectIsAuthenticated, shallowEqual);
 
   const listComments =
     commentsStack &&

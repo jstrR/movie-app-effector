@@ -11,6 +11,7 @@ import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
+import { IMovieObject } from "../../utils/Interfaces";
 import movieData from "../../utils/movieData";
 import { setActiveMovie } from "../../redux/modules/movie";
 import Comments from "../comments/Comments";
@@ -18,31 +19,31 @@ import MovieRatings from "../../common/movieRatings/MovieRatings";
 import ButtonNav from "../../common/buttonNav/ButtonNav";
 import CinemaSessions from "../cinemaSessions/CinemaSessions";
 
-const formatCurrency = (value, currency = "USD") => {
+const formatCurrency = (value: number, currency = "USD") => {
   const localFormat = localStorage.getItem("i18nextLng");
   if (localFormat === "ja-JP") {
     return (value * 108).toLocaleString(localFormat, {
       useGrouping: true,
       style: "currency",
-      currency: "JPY"
+      currency: "JPY",
     });
   }
   return value.toLocaleString("en-US", {
     useGrouping: true,
     style: "currency",
-    currency: currency
+    currency: currency,
   });
 };
 
 const getDateDisplayValue = (
-  date,
-  format = localStorage.getItem("i18nextLng")
+  date: Date,
+  format = localStorage.getItem("i18nextLng") || ""
 ) => {
   return date
     ? date.toLocaleString(format, {
         year: "numeric",
         month: "long",
-        day: "numeric"
+        day: "numeric",
       })
     : null;
 };
@@ -51,38 +52,64 @@ const stylesUtils = {
   mainColor: "#2196F3",
   lightMainColor: "#21CBF3",
   captionColor: "#878787",
-  disabledColor: "#FE6B8B"
+  disabledColor: "#FE6B8B",
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     margin: theme.spacing(4, 4),
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
   },
   media: {
     minHeight: "375px",
-    paddingTop: "56.25%" // 16:9
+    paddingTop: "56.25%", // 16:9
   },
   sectionHeading: {
-    fontWeight: "900"
+    fontWeight: 900,
   },
   buttonNav: {
     "&$disabled": {
       color: "white",
-      backgroundColor: stylesUtils.disabledColor
-    }
+      backgroundColor: stylesUtils.disabledColor,
+    },
   },
   disabled: {},
   buttonBack: {
     height: 0,
     margin: "3rem 4rem 0",
     [theme.breakpoints.down("sm")]: {
-      display: "none"
-    }
-  }
+      display: "none",
+    },
+  },
 }));
+
+interface ILoggedStatus {
+  auth: {
+    isAuthenticated: boolean;
+  };
+}
+
+interface ILoggedStatus {
+  auth: {
+    isAuthenticated: boolean;
+  };
+}
+
+interface IMovieRatings {
+  auth: {
+    currentUser?: {
+      movieRatings?: Array<object>;
+    };
+  };
+}
+
+interface IActiveMovie {
+  movie: {
+    activeMovie?: IMovieObject;
+  };
+}
 
 const MovieCard = () => {
   const dispatch = useDispatch();
@@ -90,31 +117,43 @@ const MovieCard = () => {
   const { t } = useTranslation();
   let location = useLocation();
   let { id } = useParams();
-  let { from } = location.state || { from: { pathname: "/" } };
+  let { from }: any = location.state || { from: { pathname: "/" } };
 
-  const isAuthenticated = useSelector(
-    state => state.auth.isAuthenticated,
-    shallowEqual
-  );
+  const selectIsAuthenticated = (state: ILoggedStatus) => {
+    return state.auth.isAuthenticated;
+  };
 
-  const userMoviesRatings = useSelector(
-    state => state.auth.currentUser.movieRatings,
-    shallowEqual
-  );
+  const isAuthenticated = useSelector(selectIsAuthenticated, shallowEqual);
 
-  const activeMovie = useSelector(
-    state => state.movie.activeMovie,
-    shallowEqual
-  );
+  const selectUserMoviesRatings = (state: IMovieRatings) => {
+    return (
+      state &&
+      state.auth &&
+      state.auth.currentUser &&
+      state.auth.currentUser.movieRatings
+    );
+  };
+
+  const userMoviesRatings = useSelector(selectUserMoviesRatings, shallowEqual);
+
+  const selectActiveMovie = (state: IActiveMovie) => {
+    return state.movie.activeMovie;
+  };
+
+  const activeMovie = useSelector(selectActiveMovie, shallowEqual);
 
   useEffect(() => {
-    const moviesDb = JSON.parse(localStorage.getItem("moviesDb"));
+    const moviesDb = JSON.parse(localStorage.getItem("moviesDb") || "");
     if (moviesDb && moviesDb.length) {
-      dispatch(setActiveMovie(moviesDb.find(movie => movie.id === Number(id))));
+      dispatch(
+        setActiveMovie(
+          moviesDb.find((movie: IMovieObject) => movie.id === Number(id))
+        )
+      );
     } else {
       localStorage.setItem("moviesDb", JSON.stringify(movieData));
       dispatch(
-        setActiveMovie(movieData.find(movie => movie.id === Number(id)))
+        setActiveMovie(movieData.find((movie) => movie.id === Number(id)))
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -130,8 +169,8 @@ const MovieCard = () => {
           <Grid container alignItems="center">
             <Grid item xs={12} sm={6} md={8}>
               <Typography component="h1" variant="h4">
-                {t(`movieContent|title.${activeMovie.title}`, {
-                  nsSeparator: "|"
+                {t(`movieContent|title.${activeMovie && activeMovie.title}`, {
+                  nsSeparator: "|",
                 })}
               </Typography>
             </Grid>
@@ -142,38 +181,37 @@ const MovieCard = () => {
               sm={6}
               md={4}
               justify="flex-end"
-              alignItems="center"
-            >
+              alignItems="center">
               <Typography
                 component="span"
                 variant="h6"
-                style={{ color: stylesUtils.mainColor }}
-              >
-                {activeMovie.vote_average}
+                style={{ color: stylesUtils.mainColor }}>
+                {activeMovie && activeMovie.vote_average}
               </Typography>
               <Typography
                 component="span"
                 variant="h6"
-                style={{ color: stylesUtils.captionColor }}
-              >
+                style={{ color: stylesUtils.captionColor }}>
                 /10
               </Typography>
 
-              {userMoviesRatings && userMoviesRatings[activeMovie.id] && (
-                <Typography
-                  component="span"
-                  variant="h6"
-                  style={{ color: stylesUtils.captionColor }}
-                >
-                  &nbsp;({t("translations:common.ratingsPrevious")}&nbsp;
-                  {userMoviesRatings[activeMovie.id]})
-                </Typography>
-              )}
+              {userMoviesRatings &&
+                activeMovie &&
+                activeMovie.id &&
+                userMoviesRatings[activeMovie.id] && (
+                  <Typography
+                    component="span"
+                    variant="h6"
+                    style={{ color: stylesUtils.captionColor }}>
+                    &nbsp;({t("translations:common.ratingsPrevious")}&nbsp;
+                    {userMoviesRatings[activeMovie && activeMovie.id]})
+                  </Typography>
+                )}
 
               <Grid container justify="flex-end" alignItems="center">
                 <MovieRatings
-                  movieid={activeMovie.id}
-                  rating={activeMovie.vote_average}
+                  movieid={activeMovie && activeMovie.id}
+                  rating={activeMovie && activeMovie.vote_average}
                   maxrating={10}
                   style={{ fontSize: "2rem" }}
                   disabled={!isAuthenticated}
@@ -186,10 +224,9 @@ const MovieCard = () => {
               <Typography
                 component="span"
                 variant="subtitle1"
-                style={{ color: stylesUtils.captionColor }}
-              >
-                {t(`movieContent|tagline.${activeMovie.title}`, {
-                  nsSeparator: "|"
+                style={{ color: stylesUtils.captionColor }}>
+                {t(`movieContent|tagline.${activeMovie && activeMovie.title}`, {
+                  nsSeparator: "|",
                 })}
               </Typography>
             </Grid>
@@ -198,45 +235,51 @@ const MovieCard = () => {
             <Typography
               component="span"
               variant="subtitle2"
-              style={{ color: stylesUtils.lightMainColor }}
-            >
-              {activeMovie.genres &&
+              style={{ color: stylesUtils.lightMainColor }}>
+              {activeMovie &&
+                activeMovie.genres &&
                 activeMovie.genres
-                  .map(genre => t(`movieCommon:genres.${genre}`))
+                  .map((genre: string) => t(`movieCommon:genres.${genre}`))
                   .join(", ")}
             </Typography>
           </Grid>
           <Grid container spacing={5} style={{ marginTop: "1rem" }}>
             <Grid item xs={12} sm={6} md={5}>
               <Card>
-                {activeMovie.poster_path && (
+                {activeMovie && activeMovie.poster_path && (
                   <CardMedia
                     className={classes.media}
-                    image={activeMovie.poster_path}
-                    title={activeMovie.title}
+                    image={activeMovie && activeMovie.poster_path}
+                    title={activeMovie && activeMovie.title}
                   />
                 )}
               </Card>
             </Grid>
             <Grid item xs={12} sm={6} md={7}>
-              <CinemaSessions cinemaSessions={activeMovie.cinemas} />
+              <CinemaSessions
+                cinemaSessions={activeMovie && activeMovie.cinemas}
+              />
               <Typography
                 component="div"
                 variant="h5"
-                className={classes.sectionHeading}
-              >
+                className={classes.sectionHeading}>
                 {t("movieCommon:description.aboutMovie")}
               </Typography>
               <Typography paragraph>
-                {t(`movieContent|overview.${activeMovie.title}`, {
-                  nsSeparator: "|"
-                })}
+                {t(
+                  `movieContent|overview.${activeMovie && activeMovie.title}`,
+                  {
+                    nsSeparator: "|",
+                  }
+                )}
               </Typography>
 
-              <Grid container jusify="center" style={{ marginBottom: "1rem" }}>
-                {ReactPlayer.canPlay(activeMovie.trailerUrl) && (
+              <Grid style={{ marginBottom: "1rem" }}>
+                {ReactPlayer.canPlay(
+                  (activeMovie && activeMovie.trailerUrl) || ""
+                ) && (
                   <ReactPlayer
-                    url={activeMovie.trailerUrl}
+                    url={activeMovie && activeMovie.trailerUrl}
                     controls
                     width="100%"
                   />
@@ -247,13 +290,14 @@ const MovieCard = () => {
                   <Typography
                     component="h4"
                     variant="h5"
-                    className={classes.sectionHeading}
-                  >
+                    className={classes.sectionHeading}>
                     {t("movieCommon:description.releaseDate")}
                   </Typography>
-                  {activeMovie.release_date && (
+                  {activeMovie && activeMovie.release_date && (
                     <Typography paragraph>
-                      {getDateDisplayValue(new Date(activeMovie.release_date))}
+                      {getDateDisplayValue(
+                        new Date(activeMovie && activeMovie.release_date)
+                      )}
                     </Typography>
                   )}
                 </Grid>
@@ -262,53 +306,50 @@ const MovieCard = () => {
                   <Typography
                     component="h4"
                     variant="h5"
-                    className={classes.sectionHeading}
-                  >
+                    className={classes.sectionHeading}>
                     {t("movieCommon:description.runtime")}
                   </Typography>
                   <Typography paragraph>
-                    {activeMovie.runtime} {t("translations:common.mins")}
+                    {activeMovie && activeMovie.runtime}{" "}
+                    {t("translations:common.mins")}
                   </Typography>
                 </Grid>
 
-                {activeMovie.budget ? (
+                {activeMovie && activeMovie.budget ? (
                   <Grid item>
                     <Typography
                       component="h4"
                       variant="h5"
-                      className={classes.sectionHeading}
-                    >
+                      className={classes.sectionHeading}>
                       {t("movieCommon:description.budget")}
                     </Typography>
                     <Typography paragraph>
-                      {formatCurrency(activeMovie.budget)}
+                      {formatCurrency(activeMovie && activeMovie.budget)}
                     </Typography>
                   </Grid>
                 ) : null}
 
-                {activeMovie.revenue ? (
+                {activeMovie && activeMovie.revenue ? (
                   <Grid item>
                     <Typography
                       component="h4"
                       variant="h5"
-                      className={classes.sectionHeading}
-                    >
+                      className={classes.sectionHeading}>
                       {t("movieCommon:description.revenue")}
                     </Typography>
                     <Typography paragraph>
-                      {formatCurrency(activeMovie.revenue)}
+                      {formatCurrency(activeMovie && activeMovie.revenue)}
                     </Typography>
                   </Grid>
                 ) : null}
               </Grid>
               <Grid container justify="space-between">
-                {activeMovie.price ? (
+                {activeMovie && activeMovie.price ? (
                   <Typography
                     component="h4"
                     variant="h5"
-                    className={classes.sectionHeading}
-                  >
-                    {formatCurrency(activeMovie.price)}
+                    className={classes.sectionHeading}>
+                    {formatCurrency(activeMovie && activeMovie.price)}
                   </Typography>
                 ) : null}
                 <ButtonNav
@@ -316,15 +357,14 @@ const MovieCard = () => {
                   disabled={!isAuthenticated}
                   classes={{
                     root: classes.buttonNav,
-                    disabled: classes.disabled
-                  }}
-                >
+                    disabled: classes.disabled,
+                  }}>
                   {t("translations:common.buyTicket")}
                 </ButtonNav>
               </Grid>
             </Grid>
           </Grid>
-          <Comments commentsStack={activeMovie.comments} />
+          <Comments commentsStack={activeMovie && activeMovie.comments} />
         </Container>
       </div>
     </main>

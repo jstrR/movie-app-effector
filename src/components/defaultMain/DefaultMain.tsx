@@ -5,17 +5,26 @@ import MovieSort from "../movieSort/MovieSort";
 import MoviesChart from "../moviesChart/MoviesChart";
 import movieData from "../../utils/movieData";
 import { setMoviesDb } from "../../redux/modules/movie";
+import { IMovieObject } from "../../utils/Interfaces";
+
+interface IMoviesStorage {
+  movie: {
+    moviesStorage?: Array<IMovieObject>;
+  };
+}
 
 const DefaultMain = () => {
   const dispatch = useDispatch();
-  const moviesStorage = useSelector(
-    state => state.movie.moviesStorage,
-    shallowEqual
-  );
+
+  const selectMoviesStorage = (state: IMoviesStorage) => {
+    return state.movie.moviesStorage;
+  };
+
+  const moviesStorage = useSelector(selectMoviesStorage, shallowEqual);
 
   useEffect(() => {
     if (moviesStorage && moviesStorage.length) return;
-    const currentMoviesDb = JSON.parse(localStorage.getItem("moviesDb"));
+    const currentMoviesDb = JSON.parse(localStorage.getItem("moviesDb") || "");
     if (!currentMoviesDb || !currentMoviesDb.length) {
       localStorage.setItem("moviesDb", JSON.stringify(movieData));
       dispatch(setMoviesDb(movieData));

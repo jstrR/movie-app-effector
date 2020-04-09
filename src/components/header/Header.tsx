@@ -12,34 +12,49 @@ import FadeMenuNav from "../fadeMenuNav/FadeMenuNav";
 import { logOut } from "../../redux/modules/auth";
 import "./Header.scss";
 
+interface IUserStatusSelector {
+  auth: {
+    isAuthenticated: boolean;
+    currentUser: {
+      token?: string;
+    };
+  };
+}
+
+interface IUserStatus {
+  isAuthenticated: boolean;
+  token?: string;
+}
+
 const Header = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const { t } = useTranslation();
 
-  const userStatus = useSelector(state => {
+  const selectUserStatus = (state: IUserStatusSelector) => {
     return {
       isAuthenticated: state.auth.isAuthenticated,
-      userToken: state.auth.currentUser.token
+      userToken: state.auth.currentUser.token,
     };
-  }, shallowEqual);
+  };
+
+  const userStatus: IUserStatus = useSelector(selectUserStatus, shallowEqual);
   const viewsContext = useContext(ViewContext);
 
-  const handleLogOut = response => {
+  const handleLogOut = () => {
     dispatch(logOut());
   };
 
   const mobileControlsView = (
     <>
       <ButtonNav to="/profile">{t("common.myProfile")}</ButtonNav>
-      {userStatus.token ? (
+      {userStatus && userStatus.token ? (
         <GoogleLogOut
-          render={renderProps => (
+          render={(renderProps: any) => (
             <ButtonGeneric
               onClick={renderProps.onClick}
               disabled={renderProps.disabled}
-              event="logOut"
-            >
+              event="logOut">
               {t("common.logOut")}
             </ButtonGeneric>
           )}

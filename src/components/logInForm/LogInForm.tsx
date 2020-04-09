@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link as RouterLink, useLocation, useHistory } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Avatar from "@material-ui/core/Avatar";
 import TextField from "@material-ui/core/TextField";
@@ -24,45 +24,41 @@ import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
 import GoogleLogIn from "../../common/googleLogIn/GoogleLogIn";
 import Copyright from "../../common/copyright/Copyright";
 
-const Link = React.forwardRef((props, ref) => (
-  <RouterLink ref={ref} {...props} />
-));
-
-const getUser = (mail, password) => {
+const getUser = (mail: string, password: string) => {
   let currentUser;
-  const usersDb = JSON.parse(localStorage.getItem("usersDb"));
+  const usersDb = JSON.parse(localStorage.getItem("usersDb") || "");
   if (Array.isArray(usersDb)) {
     currentUser = usersDb.find(
-      user => user.email === mail && user.password === password
+      (user) => user.email === mail && user.password === password
     );
   }
   return currentUser ? currentUser : {};
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     margin: theme.spacing(8, 4),
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: "#2196F3"
+    backgroundColor: "#2196F3",
   },
   margin: {
-    margin: theme.spacing(1, 0)
+    margin: theme.spacing(1, 0),
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   navLink: {
     textDecoration: "none",
-    color: "#3f51b5"
+    color: "#3f51b5",
   },
   submit: {
-    margin: theme.spacing(2, 0, 2)
+    margin: theme.spacing(2, 0, 2),
   },
   copyright: {
     [theme.breakpoints.down("sm")]: {
@@ -71,13 +67,13 @@ const useStyles = makeStyles(theme => ({
       marginLeft: "auto",
       marginRight: "auto",
       left: 0,
-      right: 0
-    }
+      right: 0,
+    },
   },
   googleBtn: {
     width: "100%",
-    justifyContent: "center"
-  }
+    justifyContent: "center",
+  },
 }));
 
 const LogInForm = () => {
@@ -86,18 +82,17 @@ const LogInForm = () => {
   let location = useLocation();
   let history = useHistory();
   const { t } = useTranslation(["translaitons", "login/signupPage"]);
-
-  let { from } = location.state || { from: { pathname: "/" } };
+  let { from }: any = location.state || { from: { pathname: "/" } };
   const [userData, setUserData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
-  const onChange = e => {
+  const onChange = (e: any) => {
     setUserData({ ...userData, [e.target.name]: e.target.value });
   };
 
   const [validationError, setValidationError] = useState(false);
 
-  const formSubmit = e => {
+  const formSubmit = (e: any) => {
     e.preventDefault();
     const currentUser = getUser(userData.email, userData.password);
     if (Object.entries(currentUser).length) {
@@ -135,8 +130,7 @@ const LogInForm = () => {
             required
             fullWidth
             className={classes.margin}
-            error={validationError}
-          >
+            error={validationError}>
             <InputLabel htmlFor="outlined-adornment-password">
               {t("login/signupPage:password")}
             </InputLabel>
@@ -152,9 +146,8 @@ const LogInForm = () => {
                   <IconButton
                     aria-label="toggle password visibility"
                     onClick={() => setShowPassword(!showPassword)}
-                    onMouseDown={e => e.preventDefault()}
-                    edge="end"
-                  >
+                    onMouseDown={(e) => e.preventDefault()}
+                    edge="end">
                     {showPassword ? <Visibility /> : <VisibilityOff />}
                   </IconButton>
                 </InputAdornment>
@@ -162,18 +155,17 @@ const LogInForm = () => {
               labelWidth={70}
             />
             {validationError && (
-              <FormHelperText htmlFor="outlined-adornment-password">
+              <FormHelperText>
                 {t("login/signupPage:validationError.login")}
               </FormHelperText>
             )}
           </FormControl>
-          <Box justify="center" mb={2}>
+          <Box mb={2}>
             <ButtonGeneric
               type="submit"
               fullWidth
               variant="contained"
-              className={classes.submit}
-            >
+              className={classes.submit}>
               {t("translations:common.logIn")}
             </ButtonGeneric>
             <Box my={2}>

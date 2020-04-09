@@ -10,17 +10,17 @@ const AntSwitch = withStyles({
   switchBase: {
     color: "#2196F3",
     "&$checked": {
-      color: "#FE6B8B"
+      color: "#FE6B8B",
     },
     "&$checked + $track": {
-      backgroundColor: "#FE6B8B"
-    }
+      backgroundColor: "#FE6B8B",
+    },
   },
   checked: {},
-  track: { backgroundColor: "#2196F3" }
+  track: { backgroundColor: "#2196F3" },
 })(Switch);
 
-const SwitchLang = props => {
+const SwitchLang = () => {
   const { i18n } = useTranslation();
   const [lang, setLang] = useState(
     localStorage.getItem("i18nextLng") !== "en-US"

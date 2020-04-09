@@ -9,10 +9,16 @@ import { makeStyles } from "@material-ui/core/styles";
 import SignUpForm from "../components/signUpForm/SignUpForm";
 import LogInForm from "../components/logInForm/LogInForm";
 
-const useStyles = makeStyles(theme => ({
+interface ILoggedStatus {
+  auth: {
+    isAuthenticated: boolean;
+  };
+}
+
+const useStyles = makeStyles((theme) => ({
   root: {
     height: "100vh",
-    position: "relative"
+    position: "relative",
   },
   image: {
     backgroundImage: "url(https://source.unsplash.com/random)",
@@ -22,18 +28,19 @@ const useStyles = makeStyles(theme => ({
         ? theme.palette.grey[900]
         : theme.palette.grey[50],
     backgroundSize: "cover",
-    backgroundPosition: "center"
-  }
+    backgroundPosition: "center",
+  },
 }));
 
 const Authorization = () => {
   const classes = useStyles();
   let location = useLocation();
 
-  const loggedStatus = useSelector(
-    state => state.auth.isAuthenticated,
-    shallowEqual
-  );
+  const selectLoggedStatus = (state: ILoggedStatus) => {
+    return state.auth.isAuthenticated;
+  };
+
+  const loggedStatus = useSelector(selectLoggedStatus, shallowEqual);
 
   return (
     <>
@@ -41,7 +48,7 @@ const Authorization = () => {
         <Redirect
           to={{
             pathname: "/",
-            state: { from: location }
+            state: { from: location },
           }}
         />
       )}

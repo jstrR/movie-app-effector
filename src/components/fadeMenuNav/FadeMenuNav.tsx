@@ -1,5 +1,5 @@
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { useTranslation } from "react-i18next";
 import Button from "@material-ui/core/Button";
@@ -11,13 +11,17 @@ import MenuIcon from "@material-ui/icons/Menu";
 import GoogleLogOut from "../../common/googleLogOut/GoogleLogOut";
 import { logOut } from "../../redux/modules/auth";
 
-const Link = React.forwardRef((props, ref) => (
-  <RouterLink ref={ref} {...props} />
-));
-
 const stylesUtils = {
-  mainColor: "#2196F3"
+  mainColor: "#2196F3",
 };
+
+interface ITokenStatus {
+  auth: {
+    currentUser?: {
+      token?: string;
+    };
+  };
+}
 
 const FadeMenuNavigation = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -25,11 +29,13 @@ const FadeMenuNavigation = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const userToken = useSelector(state => {
-    return state.auth.currentUser.token;
-  }, shallowEqual);
+  const selectUserToken = (state: ITokenStatus) => {
+    return state.auth && state.auth.currentUser && state.auth.currentUser.token;
+  };
 
-  const handleClick = event => {
+  const userToken = useSelector(selectUserToken, shallowEqual);
+
+  const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -37,7 +43,7 @@ const FadeMenuNavigation = () => {
     setAnchorEl(null);
   };
 
-  const handleLogOut = response => {
+  const handleLogOut = () => {
     handleClose();
     dispatch(logOut());
   };
@@ -47,8 +53,7 @@ const FadeMenuNavigation = () => {
       <Button
         aria-controls="fade-menu"
         aria-haspopup="true"
-        onClick={handleClick}
-      >
+        onClick={handleClick}>
         <MenuIcon style={{ color: stylesUtils.mainColor }} fontSize="large" />
       </Button>
       <Menu
@@ -57,24 +62,21 @@ const FadeMenuNavigation = () => {
         keepMounted
         open={open}
         onClose={handleClose}
-        TransitionComponent={Fade}
-      >
+        TransitionComponent={Fade}>
         <MenuItem
           style={{ color: stylesUtils.mainColor }}
           onClick={handleClose}
           component={Link}
-          to="/profile"
-        >
+          to="/profile">
           {t("common.myProfile")}
         </MenuItem>
         {userToken ? (
           <GoogleLogOut
             onLogoutSuccess={handleLogOut}
-            render={renderProps => (
+            render={(renderProps: any) => (
               <MenuItem
                 onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
-              >
+                disabled={renderProps.disabled}>
                 {t("common.logOut")}
               </MenuItem>
             )}

@@ -4,21 +4,25 @@ import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 
 import MovieChartCard from "../../common/movieChartCard/MovieChartCard";
+import { IMovieObject } from "../../utils/Interfaces";
 
-const useStyles = makeStyles(theme => ({
+interface IMoviesChartProps {
+  moviesStorage: Array<IMovieObject>;
+}
+
+const useStyles = makeStyles((theme) => ({
   cardGrid: {
     paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(8)
-  }
+    paddingBottom: theme.spacing(8),
+  },
 }));
 
-const MoviesChart = ({ moviesStorage }) => {
+const MoviesChart: React.FC<IMoviesChartProps> = ({ moviesStorage }) => {
   const classes = useStyles();
-
   return (
     <Container className={classes.cardGrid} maxWidth="md">
       <Grid container spacing={8}>
-        {moviesStorage.map(card => (
+        {moviesStorage.map((card) => (
           <Grid item key={card.id} xs={12} sm={6} md={4}>
             <MovieChartCard movieData={card} />
           </Grid>

@@ -1,6 +1,6 @@
 import React, { useState, useReducer } from "react";
 import { useDispatch } from "react-redux";
-import { Link as RouterLink, useLocation, useHistory } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Avatar from "@material-ui/core/Avatar";
 import TextField from "@material-ui/core/TextField";
@@ -23,9 +23,20 @@ import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
 import GoogleLogIn from "../../common/googleLogIn/GoogleLogIn";
 import Copyright from "../../common/copyright/Copyright";
 
-const Link = React.forwardRef((props, ref) => (
-  <RouterLink ref={ref} {...props} />
-));
+interface IFormState {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  role?: string;
+  token?: string;
+}
+
+interface IField {
+  field: string;
+  value?: any;
+}
 
 const initialState = {
   id: 0,
@@ -34,51 +45,51 @@ const initialState = {
   email: "",
   password: "",
   role: "",
-  token: ""
+  token: "",
 };
 
-const reducer = (state, { field, value }) => {
+const reducer = (state: IFormState, { field, value }: IField) => {
   return { ...state, [field]: value };
 };
 
-const addNewUserToStorage = userObj => {
-  let usersDb = JSON.parse(localStorage.getItem("usersDb"));
+const addNewUserToStorage = (userObj: IFormState) => {
+  let usersDb = JSON.parse(localStorage.getItem("usersDb") || "");
   if (!Array.isArray(usersDb)) usersDb = [];
-  if (userObj.id === 0) {
+  if (userObj && userObj.id === 0) {
     userObj.id = usersDb.length + 1;
   }
   usersDb.push(userObj);
   localStorage.setItem("usersDb", JSON.stringify(usersDb));
 };
 
-const validateNewUser = userObj => {
-  let usersDb = JSON.parse(localStorage.getItem("usersDb"));
+const validateNewUser = (userObj: IFormState) => {
+  let usersDb = JSON.parse(localStorage.getItem("usersDb") || "");
   if (Array.isArray(usersDb)) {
-    return !usersDb.find(user => user.email === userObj.email);
+    return !usersDb.find((user) => user.email === userObj.email);
   } else return true;
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   paper: {
     margin: theme.spacing(8, 4),
     display: "flex",
     flexDirection: "column",
-    alignItems: "center"
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: "#2196F3"
+    backgroundColor: "#2196F3",
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1)
+    marginTop: theme.spacing(1),
   },
   navLink: {
     textDecoration: "none",
-    color: "#3f51b5"
+    color: "#3f51b5",
   },
   submit: {
-    margin: theme.spacing(2, 0, 2)
+    margin: theme.spacing(2, 0, 2),
   },
   copyright: {
     [theme.breakpoints.down("sm")]: {
@@ -87,33 +98,33 @@ const useStyles = makeStyles(theme => ({
       marginLeft: "auto",
       marginRight: "auto",
       left: 0,
-      right: 0
-    }
+      right: 0,
+    },
   },
   googleBtn: {
     width: "100%",
-    justifyContent: "center"
-  }
+    justifyContent: "center",
+  },
 }));
 
-const SignUpForm = props => {
+const SignUpForm = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   let location = useLocation();
   let history = useHistory();
   const { t } = useTranslation(["translaitons", "login/signupPage"]);
-  let { from } = location.state || { from: { pathname: "/" } };
+  let { from }: any = location.state || { from: { pathname: "/" } };
 
   const [validationError, setValidationError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
   const [state, reactDispatch] = useReducer(reducer, initialState);
 
-  const onChange = e => {
+  const onChange = (e: any) => {
     reactDispatch({ field: e.target.name, value: e.target.value });
   };
 
-  const formSubmit = e => {
+  const formSubmit = (e: any) => {
     e.preventDefault();
     const newUser = { ...state };
     if (newUser.email.split("@")[0] === "admin") {
@@ -203,9 +214,8 @@ const SignUpForm = props => {
                       <IconButton
                         aria-label="toggle password visibility"
                         onClick={() => setShowPassword(!showPassword)}
-                        onMouseDown={e => e.preventDefault()}
-                        edge="end"
-                      >
+                        onMouseDown={(e) => e.preventDefault()}
+                        edge="end">
                         {showPassword ? <Visibility /> : <VisibilityOff />}
                       </IconButton>
                     </InputAdornment>
@@ -215,13 +225,12 @@ const SignUpForm = props => {
               </FormControl>
             </Grid>
           </Grid>
-          <Box justify="center" mb={2}>
+          <Box mb={2}>
             <ButtonGeneric
               type="submit"
               fullWidth
               variant="contained"
-              className={classes.submit}
-            >
+              className={classes.submit}>
               {t("translations:common.signUp")}
             </ButtonGeneric>
             <Box my={2}>

@@ -4,10 +4,16 @@ import { useDispatch } from "react-redux";
 import ListCinemaSessions from "../listCinemaSessions/ListCinemaSessions";
 import { bookMovieSession } from "../../redux/modules/purchaseData";
 
-const CinemaSessions = ({ cinemaSessions }) => {
+interface ICinemaSessionsProps {
+  cinemaSessions?: Array<{
+    cinema?: Array<string>;
+  }>;
+}
+
+const CinemaSessions: React.FC<ICinemaSessionsProps> = ({ cinemaSessions }) => {
   const dispatch = useDispatch();
 
-  const bookSession = (cinema, time) => {
+  const bookSession = (cinema: string, time: string) => {
     setSelected({ cinema: cinema, time: time });
     dispatch(bookMovieSession({ cinema: cinema, time: time }));
   };
@@ -15,7 +21,7 @@ const CinemaSessions = ({ cinemaSessions }) => {
 
   const listSessions =
     cinemaSessions &&
-    cinemaSessions.map((cinema, index) => {
+    cinemaSessions.map((cinema: object, index: number) => {
       return (
         <ListCinemaSessions
           key={index}

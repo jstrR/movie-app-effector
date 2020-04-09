@@ -8,41 +8,48 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { addComment } from "../../redux/modules/movie";
 import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
+import { IUserObj } from "../../utils/Interfaces";
 
 const stylesUtils = {
   mainColor: "#2196F3",
-  hoverButtonColor: "#21CBF3"
+  hoverButtonColor: "#21CBF3",
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   inputWrapper: {
     marginTop: "3rem",
     [theme.breakpoints.down("sm")]: {
-      marginTop: "1rem"
-    }
+      marginTop: "1rem",
+    },
   },
   form: {
-    width: "100%"
+    width: "100%",
   },
   textField: {
     marginBottom: "1.5rem",
     [theme.breakpoints.down("sm")]: {
-      marginBottom: "1rem"
-    }
+      marginBottom: "1rem",
+    },
   },
   submit: {
     "&:hover": {
-      backgroundColor: stylesUtils.hoverButtonColor
-    }
+      backgroundColor: stylesUtils.hoverButtonColor,
+    },
   },
   cssOutlinedInput: {
     "&$cssFocused $notchedOutline": {
-      borderColor: stylesUtils.mainColor
-    }
+      borderColor: stylesUtils.mainColor,
+    },
   },
   cssFocused: {},
-  notchedOutline: {}
+  notchedOutline: {},
 }));
+
+interface ICurrentUserSelector {
+  auth: {
+    currentUser?: IUserObj;
+  };
+}
 
 const CommentsInput = () => {
   const classes = useStyles();
@@ -52,18 +59,19 @@ const CommentsInput = () => {
 
   const [inputValue, setInputValue] = useState("");
 
-  const currentUser = useSelector(
-    state => state.auth.currentUser,
-    shallowEqual
-  );
+  const selectCurrentUser = (state: ICurrentUserSelector) => {
+    return state.auth.currentUser;
+  };
 
-  const formSubmit = e => {
+  const currentUser = useSelector(selectCurrentUser, shallowEqual);
+
+  const formSubmit = (e: any) => {
     e.preventDefault();
     const comment = {
       movieId: id,
-      author: currentUser.email,
+      author: currentUser && currentUser.email,
       message: inputValue,
-      date: new Date()
+      date: new Date(),
     };
     dispatch(addComment(comment));
     setInputValue("");
@@ -77,21 +85,21 @@ const CommentsInput = () => {
             classes: {
               root: classes.cssOutlinedInput,
               focused: classes.cssFocused,
-              notchedOutline: classes.notchedOutline
-            }
+              notchedOutline: classes.notchedOutline,
+            },
           }}
-          label={currentUser.email}
+          label={currentUser && currentUser.email}
           className={classes.textField}
           placeholder={t("comments:typeComment")}
           multiline
           fullWidth
           margin="normal"
           InputLabelProps={{
-            shrink: true
+            shrink: true,
           }}
           variant="outlined"
           value={inputValue}
-          onChange={e => setInputValue(e.target.value)}
+          onChange={(e) => setInputValue(e.target.value)}
         />
         <ButtonGeneric className={classes.submit} type="submit">
           {t("comments:postComment")}

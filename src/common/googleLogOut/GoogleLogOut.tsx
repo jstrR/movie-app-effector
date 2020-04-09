@@ -3,10 +3,10 @@ import { useDispatch } from "react-redux";
 import { logOut } from "../../redux/modules/auth";
 import { GoogleLogout } from "react-google-login";
 
-const GoogleLogOut = props => {
+const GoogleLogOut: React.FC<any> = (props) => {
   const dispatch = useDispatch();
 
-  const handleLogOut = response => {
+  const handleLogOut = (response: any) => {
     dispatch(logOut());
   };
 

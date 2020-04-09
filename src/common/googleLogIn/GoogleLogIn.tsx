@@ -3,12 +3,13 @@ import { useDispatch } from "react-redux";
 import { logIn } from "../../redux/modules/auth";
 import { GoogleLogin } from "react-google-login";
 import { useLocation, useHistory } from "react-router-dom";
+import { IUserObj } from "../../utils/Interfaces";
 
-const syncUserWithStorage = userObj => {
+const syncUserWithStorage = (userObj: IUserObj) => {
   let currUser;
-  let usersDb = JSON.parse(localStorage.getItem("usersDb"));
+  let usersDb = JSON.parse(localStorage.getItem("usersDb") || "");
   if (!Array.isArray(usersDb)) usersDb = [];
-  currUser = usersDb.find(user => user.id === userObj.id);
+  currUser = usersDb.find((user: IUserObj) => user.id === userObj.id);
   if (currUser) return currUser;
   else {
     usersDb.push(userObj);
@@ -17,12 +18,12 @@ const syncUserWithStorage = userObj => {
   }
 };
 
-const GoogleLogIn = props => {
+const GoogleLogIn: React.FC<any> = (props) => {
   const dispatch = useDispatch();
   let history = useHistory();
   let location = useLocation();
-  let { from } = location.state || { from: { pathname: "/" } };
-  const googleAuthSuccess = response => {
+  let { from }: any = location.state || { from: { pathname: "/" } };
+  const googleAuthSuccess = (response: any) => {
     const newUserObj = {
       id: response.profileObj.googleId,
       firstName: response.profileObj.givenName,
@@ -30,13 +31,13 @@ const GoogleLogIn = props => {
       email: response.profileObj.email,
       password: "",
       role: "user",
-      token: response.getAuthResponse().id_token
+      token: response.getAuthResponse().id_token,
     };
     dispatch(logIn(syncUserWithStorage(newUserObj)));
     history.push(from);
   };
 
-  const googleAuthFailure = response => {
+  const googleAuthFailure = (response: any) => {
     console.log(response);
   };
 

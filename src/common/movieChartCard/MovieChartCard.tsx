@@ -1,7 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import PropTypes from "prop-types";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
@@ -10,54 +9,59 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
 import ButtonNav from "../buttonNav/ButtonNav";
-import MovieRatings from "../../common/movieRatings/MovieRatings";
+import MovieRatings from "../movieRatings/MovieRatings";
+import { IMovieObject } from "../../utils/Interfaces";
 
 const getDateDisplayValue = (
-  date,
+  date: Date,
   format = localStorage.getItem("i18nextLng")
 ) => {
   return date
-    ? date.toLocaleString(format, {
-        year: "numeric"
+    ? date.toLocaleString((format = "en-US"), {
+        year: "numeric",
       })
     : null;
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   card: {
     height: "100%",
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
   },
   media: {
     paddingTop: "56.25%", // 16:9
     backgroundSize: "cover",
-    minHeight: "175px"
+    minHeight: "175px",
   },
   content: {
     display: "flex",
     flexGrow: 1,
-    flexDirection: "column"
+    flexDirection: "column",
   },
   title: {
-    flexGrow: 2
+    flexGrow: 2,
   },
   genres: {
-    color: "#a3a0a0"
+    color: "#a3a0a0",
   },
   date: {
     color: "#a3a0a0",
-    fontSize: "0.9rem"
+    fontSize: "0.9rem",
   },
   buttonNav: {
     margin: 0,
     "&:hover": {
-      backgroundColor: "#21CBF3"
-    }
-  }
+      backgroundColor: "#21CBF3",
+    },
+  },
 }));
 
-const MovieChartCard = ({ movieData }) => {
+interface IMovieChartCardProps {
+  movieData: IMovieObject;
+}
+
+const MovieChartCard: React.FC<IMovieChartCardProps> = ({ movieData }) => {
   const classes = useStyles();
   const { t } = useTranslation();
   let location = useLocation();
@@ -68,7 +72,7 @@ const MovieChartCard = ({ movieData }) => {
         className={classes.media}
         image={movieData.poster_path}
         title={t(`movieContent|title.${movieData.title}`, {
-          nsSeparator: "|"
+          nsSeparator: "|",
         })}
       />
       <CardContent className={classes.content}>
@@ -76,48 +80,43 @@ const MovieChartCard = ({ movieData }) => {
           gutterBottom
           variant="h5"
           component="h2"
-          className={classes.title}
-        >
+          className={classes.title}>
           {t(`movieContent|title.${movieData.title}`, {
-            nsSeparator: "|"
+            nsSeparator: "|",
           })}
         </Typography>
         <Typography gutterBottom className={classes.genres}>
-          {movieData.genres
-            .map(genre => t(`movieCommon:genres.${genre}`))
-            .join(", ")}
+          {movieData &&
+            movieData.genres &&
+            movieData.genres
+              .map((genre: string) => t(`movieCommon:genres.${genre}`))
+              .join(", ")}
         </Typography>
         <MovieRatings
           rating={movieData.vote_average}
-          moviename={movieData.title}
           maxrating={10}
-          readOnly
+          disabled
           style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}
         />
         <Typography className={classes.date}>
-          {getDateDisplayValue(new Date(movieData.release_date))}
+          {getDateDisplayValue(
+            new Date((movieData && movieData.release_date) || "")
+          )}
         </Typography>
       </CardContent>
       <CardActions>
         <ButtonNav
           className={classes.buttonNav}
           fullWidth
-          to={{ pathname: `/movie/${movieData.id}`, state: { from: location } }}
-        >
+          to={{
+            pathname: `/movie/${movieData.id}`,
+            state: { from: location },
+          }}>
           {t("translations:common.view")}
         </ButtonNav>
       </CardActions>
     </Card>
   );
-};
-
-MovieChartCard.propTypes = {
-  movieData: PropTypes.shape({
-    id: PropTypes.number.isRequired,
-    poster_path: PropTypes.string,
-    genres: PropTypes.arrayOf(PropTypes.string).isRequired,
-    release_date: PropTypes.string.isRequired
-  }).isRequired
 };
 
 export default MovieChartCard;
