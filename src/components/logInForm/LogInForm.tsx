@@ -23,8 +23,9 @@ import { logIn } from "../../redux/modules/auth";
 import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
 import GoogleLogIn from "../../common/googleLogIn/GoogleLogIn";
 import Copyright from "../../common/copyright/Copyright";
+import { IUserObj } from "../../utils/Interfaces";
 
-const getUser = (mail: string, password: string) => {
+const getUser = (mail: string, password: string): IUserObj | {} => {
   let currentUser;
   const usersDb = JSON.parse(localStorage.getItem("usersDb") || "");
   if (Array.isArray(usersDb)) {
@@ -86,13 +87,17 @@ const LogInForm = () => {
   const [userData, setUserData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
 
-  const onChange = (e: any) => {
-    setUserData({ ...userData, [e.target.name]: e.target.value });
+  const onChange = (e: React.SyntheticEvent<EventTarget>): void => {
+    setUserData({
+      ...userData,
+      [(e.target as HTMLInputElement).name]: (e.target as HTMLInputElement)
+        .value,
+    });
   };
 
   const [validationError, setValidationError] = useState(false);
 
-  const formSubmit = (e: any) => {
+  const formSubmit = (e: React.FormEvent<EventTarget>): void => {
     e.preventDefault();
     const currentUser = getUser(userData.email, userData.password);
     if (Object.entries(currentUser).length) {

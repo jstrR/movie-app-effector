@@ -15,7 +15,7 @@ const stylesUtils = {
   mainColor: "#2196F3",
 };
 
-interface ITokenStatus {
+interface ITokenStatusSelector {
   auth: {
     currentUser?: {
       token?: string;
@@ -29,21 +29,24 @@ const FadeMenuNavigation = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const selectUserToken = (state: ITokenStatus) => {
+  const selectUserToken = (state: ITokenStatusSelector): string | undefined => {
     return state.auth && state.auth.currentUser && state.auth.currentUser.token;
   };
 
-  const userToken = useSelector(selectUserToken, shallowEqual);
+  const userToken: string | undefined = useSelector(
+    selectUserToken,
+    shallowEqual
+  );
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (): void => {
     setAnchorEl(null);
   };
 
-  const handleLogOut = () => {
+  const handleLogOut = (): void => {
     handleClose();
     dispatch(logOut());
   };

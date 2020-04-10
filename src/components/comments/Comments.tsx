@@ -16,11 +16,14 @@ interface ILoggedStatus {
 }
 
 const Comments: React.FC<ICommentsProps> = ({ commentsStack }) => {
-  const selectIsAuthenticated = (state: ILoggedStatus) => {
+  const selectIsAuthenticated = (state: ILoggedStatus): boolean => {
     return state.auth.isAuthenticated;
   };
 
-  const isAuthenticated = useSelector(selectIsAuthenticated, shallowEqual);
+  const isAuthenticated: boolean = useSelector(
+    selectIsAuthenticated,
+    shallowEqual
+  );
 
   const listComments =
     commentsStack &&

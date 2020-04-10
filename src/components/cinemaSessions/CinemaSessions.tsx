@@ -13,7 +13,7 @@ interface ICinemaSessionsProps {
 const CinemaSessions: React.FC<ICinemaSessionsProps> = ({ cinemaSessions }) => {
   const dispatch = useDispatch();
 
-  const bookSession = (cinema: string, time: string) => {
+  const bookSession = (cinema: string, time: string): void => {
     setSelected({ cinema: cinema, time: time });
     dispatch(bookMovieSession({ cinema: cinema, time: time }));
   };

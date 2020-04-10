@@ -5,7 +5,7 @@ import { GoogleLogin } from "react-google-login";
 import { useLocation, useHistory } from "react-router-dom";
 import { IUserObj } from "../../utils/Interfaces";
 
-const syncUserWithStorage = (userObj: IUserObj) => {
+const syncUserWithStorage = (userObj: IUserObj): IUserObj => {
   let currUser;
   let usersDb = JSON.parse(localStorage.getItem("usersDb") || "");
   if (!Array.isArray(usersDb)) usersDb = [];
@@ -23,7 +23,7 @@ const GoogleLogIn: React.FC<any> = (props) => {
   let history = useHistory();
   let location = useLocation();
   let { from }: any = location.state || { from: { pathname: "/" } };
-  const googleAuthSuccess = (response: any) => {
+  const googleAuthSuccess = (response: any): void => {
     const newUserObj = {
       id: response.profileObj.googleId,
       firstName: response.profileObj.givenName,
@@ -37,7 +37,7 @@ const GoogleLogIn: React.FC<any> = (props) => {
     history.push(from);
   };
 
-  const googleAuthFailure = (response: any) => {
+  const googleAuthFailure = (response: any): void => {
     console.log(response);
   };
 

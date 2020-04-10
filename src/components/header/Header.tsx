@@ -31,17 +31,17 @@ const Header = () => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  const selectUserStatus = (state: IUserStatusSelector) => {
+  const selectUserStatus = (state: IUserStatusSelector): IUserStatus => {
     return {
       isAuthenticated: state.auth.isAuthenticated,
-      userToken: state.auth.currentUser.token,
+      token: state.auth.currentUser.token,
     };
   };
 
   const userStatus: IUserStatus = useSelector(selectUserStatus, shallowEqual);
   const viewsContext = useContext(ViewContext);
 
-  const handleLogOut = () => {
+  const handleLogOut = (): void => {
     dispatch(logOut());
   };
 

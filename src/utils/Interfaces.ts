@@ -31,3 +31,11 @@ export interface IComment {
   date: string;
   message: string;
 }
+
+export interface IMovieRatings {
+  movieid?: number;
+  rating?: string;
+  maxrating: number;
+  style?: object;
+  disabled?: boolean;
+}

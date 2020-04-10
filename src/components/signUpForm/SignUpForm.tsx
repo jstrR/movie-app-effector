@@ -52,7 +52,7 @@ const reducer = (state: IFormState, { field, value }: IField) => {
   return { ...state, [field]: value };
 };
 
-const addNewUserToStorage = (userObj: IFormState) => {
+const addNewUserToStorage = (userObj: IFormState): void => {
   let usersDb = JSON.parse(localStorage.getItem("usersDb") || "");
   if (!Array.isArray(usersDb)) usersDb = [];
   if (userObj && userObj.id === 0) {
@@ -62,7 +62,7 @@ const addNewUserToStorage = (userObj: IFormState) => {
   localStorage.setItem("usersDb", JSON.stringify(usersDb));
 };
 
-const validateNewUser = (userObj: IFormState) => {
+const validateNewUser = (userObj: IFormState): boolean => {
   let usersDb = JSON.parse(localStorage.getItem("usersDb") || "");
   if (Array.isArray(usersDb)) {
     return !usersDb.find((user) => user.email === userObj.email);
@@ -120,11 +120,14 @@ const SignUpForm = () => {
 
   const [state, reactDispatch] = useReducer(reducer, initialState);
 
-  const onChange = (e: any) => {
-    reactDispatch({ field: e.target.name, value: e.target.value });
+  const onChange = (e: React.SyntheticEvent<EventTarget>): void => {
+    reactDispatch({
+      field: (e.target as HTMLInputElement).name,
+      value: (e.target as HTMLInputElement).value,
+    });
   };
 
-  const formSubmit = (e: any) => {
+  const formSubmit = (e: React.FormEvent<EventTarget>): void => {
     e.preventDefault();
     const newUser = { ...state };
     if (newUser.email.split("@")[0] === "admin") {

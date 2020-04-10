@@ -59,13 +59,18 @@ const CommentsInput = () => {
 
   const [inputValue, setInputValue] = useState("");
 
-  const selectCurrentUser = (state: ICurrentUserSelector) => {
+  const selectCurrentUser = (
+    state: ICurrentUserSelector
+  ): IUserObj | undefined => {
     return state.auth.currentUser;
   };
 
-  const currentUser = useSelector(selectCurrentUser, shallowEqual);
+  const currentUser: IUserObj | undefined = useSelector(
+    selectCurrentUser,
+    shallowEqual
+  );
 
-  const formSubmit = (e: any) => {
+  const formSubmit = (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
     const comment = {
       movieId: id,

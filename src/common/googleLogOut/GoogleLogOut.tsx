@@ -6,7 +6,7 @@ import { GoogleLogout } from "react-google-login";
 const GoogleLogOut: React.FC<any> = (props) => {
   const dispatch = useDispatch();
 
-  const handleLogOut = (response: any) => {
+  const handleLogOut = (response: any): void => {
     dispatch(logOut());
   };
 

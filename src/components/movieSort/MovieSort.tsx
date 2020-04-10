@@ -12,26 +12,26 @@ import IconButton from "@material-ui/core/IconButton";
 import { sortByRating } from "../../redux/modules/movie";
 import { sortByDate } from "../../redux/modules/movie";
 
-const useDidMount = () => {
+const useDidMount = (): boolean => {
   const [didMount, setDidMount] = useState(false);
   useEffect(() => setDidMount(true), []);
   return didMount;
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   item: {
     alignItems: "center",
     justifyContent: "center",
-    marginTop: "1rem"
+    marginTop: "1rem",
   },
   buttonToggler: {
     color: "#2196F3",
     marginLeft: "0.5rem",
     padding: 0,
     "&:hover": {
-      backgroundColor: "rgba(33, 150, 243, 0.11)"
-    }
-  }
+      backgroundColor: "rgba(33, 150, 243, 0.11)",
+    },
+  },
 }));
 
 const MovieSort = () => {
@@ -63,16 +63,14 @@ const MovieSort = () => {
           {ratingSortType !== "asc" && (
             <IconButton
               className={classes.buttonToggler}
-              onClick={() => setRatingSortType("asc")}
-            >
+              onClick={() => setRatingSortType("asc")}>
               <KeyboardArrowDownOutlinedIcon style={{ fontSize: "2.5rem" }} />
             </IconButton>
           )}
           {ratingSortType !== "desc" && (
             <IconButton
               className={classes.buttonToggler}
-              onClick={() => setRatingSortType("desc")}
-            >
+              onClick={() => setRatingSortType("desc")}>
               <KeyboardArrowUpOutlinedIcon style={{ fontSize: "2.5rem" }} />
             </IconButton>
           )}
@@ -84,16 +82,14 @@ const MovieSort = () => {
           {dateSortType !== "asc" && (
             <IconButton
               className={classes.buttonToggler}
-              onClick={() => setDateSortType("asc")}
-            >
+              onClick={() => setDateSortType("asc")}>
               <KeyboardArrowDownOutlinedIcon style={{ fontSize: "2.5rem" }} />
             </IconButton>
           )}
           {dateSortType !== "desc" && (
             <IconButton
               className={classes.buttonToggler}
-              onClick={() => setDateSortType("desc")}
-            >
+              onClick={() => setDateSortType("desc")}>
               <KeyboardArrowUpOutlinedIcon style={{ fontSize: "2.5rem" }} />
             </IconButton>
           )}

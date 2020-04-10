@@ -8,7 +8,7 @@ import { IComment } from "../../utils/Interfaces";
 const getDateDisplayValue = (
   date: Date,
   format = localStorage.getItem("i18nextLng")
-) => {
+): string | null => {
   return date
     ? date.toLocaleString((format = "en-Us"), {
         year: "numeric",

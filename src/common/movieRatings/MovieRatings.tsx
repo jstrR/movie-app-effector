@@ -4,21 +4,18 @@ import { useDispatch } from "react-redux";
 
 import { setNewMovieRating } from "../../redux/modules/auth";
 import { updateUsersDb } from "../../redux/modules/auth";
+import { IMovieRatings } from "../../utils/Interfaces";
 
-interface IMovieRatingsProps {
-  movieid?: number;
-  rating?: string;
-  maxrating: number;
-  style?: object;
-  disabled?: boolean;
-}
-
-const MovieRatings: React.FC<IMovieRatingsProps> = (props) => {
+const MovieRatings: React.FC<IMovieRatings> = (props) => {
   const dispatch = useDispatch();
 
-  const setNewRating = (e: any) => {
+  const setNewRating = (e: React.SyntheticEvent<EventTarget>) => {
     if (props.movieid) {
-      dispatch(setNewMovieRating({ [props.movieid]: e.target.value }));
+      dispatch(
+        setNewMovieRating({
+          [props.movieid]: (e.target as HTMLInputElement).value,
+        })
+      );
       dispatch(updateUsersDb());
     }
   };

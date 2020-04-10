@@ -9,7 +9,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import SignUpForm from "../components/signUpForm/SignUpForm";
 import LogInForm from "../components/logInForm/LogInForm";
 
-interface ILoggedStatus {
+interface ILoggedStatusSelector {
   auth: {
     isAuthenticated: boolean;
   };
@@ -36,11 +36,11 @@ const Authorization = () => {
   const classes = useStyles();
   let location = useLocation();
 
-  const selectLoggedStatus = (state: ILoggedStatus) => {
+  const selectLoggedStatus = (state: ILoggedStatusSelector): boolean => {
     return state.auth.isAuthenticated;
   };
 
-  const loggedStatus = useSelector(selectLoggedStatus, shallowEqual);
+  const loggedStatus: boolean = useSelector(selectLoggedStatus, shallowEqual);
 
   return (
     <>

@@ -19,7 +19,9 @@ interface IPurchaseData {
 const Seats = () => {
   //const classes = useStyles();
 
-  const selectPurchaseData = (state: IPurchaseData) => {
+  const selectPurchaseData = (
+    state: IPurchaseData
+  ): { cinema: string; time: string } | undefined => {
     return state.purchaseData && state.purchaseData.session;
   };
 

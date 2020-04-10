@@ -16,11 +16,16 @@ interface IMoviesStorage {
 const DefaultMain = () => {
   const dispatch = useDispatch();
 
-  const selectMoviesStorage = (state: IMoviesStorage) => {
+  const selectMoviesStorage = (
+    state: IMoviesStorage
+  ): Array<IMovieObject> | undefined => {
     return state.movie.moviesStorage;
   };
 
-  const moviesStorage = useSelector(selectMoviesStorage, shallowEqual);
+  const moviesStorage: Array<IMovieObject> | undefined = useSelector(
+    selectMoviesStorage,
+    shallowEqual
+  );
 
   useEffect(() => {
     if (moviesStorage && moviesStorage.length) return;

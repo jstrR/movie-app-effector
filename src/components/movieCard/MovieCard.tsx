@@ -11,7 +11,7 @@ import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
-import { IMovieObject } from "../../utils/Interfaces";
+import { IMovieObject, IMovieRatings } from "../../utils/Interfaces";
 import movieData from "../../utils/movieData";
 import { setActiveMovie } from "../../redux/modules/movie";
 import Comments from "../comments/Comments";
@@ -19,7 +19,7 @@ import MovieRatings from "../../common/movieRatings/MovieRatings";
 import ButtonNav from "../../common/buttonNav/ButtonNav";
 import CinemaSessions from "../cinemaSessions/CinemaSessions";
 
-const formatCurrency = (value: number, currency = "USD") => {
+const formatCurrency = (value: number, currency = "USD"): string => {
   const localFormat = localStorage.getItem("i18nextLng");
   if (localFormat === "ja-JP") {
     return (value * 108).toLocaleString(localFormat, {
@@ -38,7 +38,7 @@ const formatCurrency = (value: number, currency = "USD") => {
 const getDateDisplayValue = (
   date: Date,
   format = localStorage.getItem("i18nextLng") || ""
-) => {
+): string | null => {
   return date
     ? date.toLocaleString(format, {
         year: "numeric",
@@ -91,16 +91,10 @@ interface ILoggedStatus {
   };
 }
 
-interface ILoggedStatus {
-  auth: {
-    isAuthenticated: boolean;
-  };
-}
-
-interface IMovieRatings {
+interface IMovieRatingsSelector {
   auth: {
     currentUser?: {
-      movieRatings?: Array<object>;
+      movieRatings?: Array<IMovieRatings>;
     };
   };
 }
@@ -119,13 +113,15 @@ const MovieCard = () => {
   let { id } = useParams();
   let { from }: any = location.state || { from: { pathname: "/" } };
 
-  const selectIsAuthenticated = (state: ILoggedStatus) => {
+  const selectIsAuthenticated = (state: ILoggedStatus): boolean | undefined => {
     return state.auth.isAuthenticated;
   };
 
   const isAuthenticated = useSelector(selectIsAuthenticated, shallowEqual);
 
-  const selectUserMoviesRatings = (state: IMovieRatings) => {
+  const selectUserMoviesRatings = (
+    state: IMovieRatingsSelector
+  ): Array<IMovieRatings> | undefined => {
     return (
       state &&
       state.auth &&
@@ -136,7 +132,7 @@ const MovieCard = () => {
 
   const userMoviesRatings = useSelector(selectUserMoviesRatings, shallowEqual);
 
-  const selectActiveMovie = (state: IActiveMovie) => {
+  const selectActiveMovie = (state: IActiveMovie): IMovieObject | undefined => {
     return state.movie.activeMovie;
   };
 

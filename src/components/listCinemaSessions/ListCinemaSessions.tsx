@@ -7,7 +7,7 @@ import Grid from "@material-ui/core/Grid";
 const getTimeDisplayValue = (
   time: Date,
   format = localStorage.getItem("i18nextLng")
-) => {
+): string | null => {
   return time
     ? time.toLocaleString((format = "en-US"), {
         hour: "numeric",
@@ -53,8 +53,11 @@ const ListCinemaSessions: React.FC<IListCinemaSessionsProps> = ({
 }) => {
   const classes = useStyles();
 
-  const handleClick = (e: any) => {
-    bookSession(Object.keys(movieSessions)[0], e.currentTarget.id);
+  const handleClick = (e: React.SyntheticEvent<EventTarget>) => {
+    bookSession(
+      Object.keys(movieSessions)[0],
+      (e.currentTarget as HTMLInputElement).id
+    );
   };
 
   const chipItems =
