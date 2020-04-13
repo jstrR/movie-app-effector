@@ -4,7 +4,7 @@ import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 
 import MovieChartCard from "../../common/movieChartCard/MovieChartCard";
-import { IMovieObject } from "../../utils/Interfaces";
+import { IMovieObject } from "../../utils/types";
 
 interface IMoviesChartProps {
   moviesStorage: Array<IMovieObject>;

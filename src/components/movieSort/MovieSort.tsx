@@ -40,8 +40,8 @@ const MovieSort = () => {
   const didMount = useDidMount();
   const { t } = useTranslation();
 
-  const [ratingSortType, setRatingSortType] = React.useState("desc");
-  const [dateSortType, setDateSortType] = React.useState("desc");
+  const [ratingSortType, setRatingSortType] = React.useState<string>("desc");
+  const [dateSortType, setDateSortType] = React.useState<string>("desc");
 
   useEffect(() => {
     dispatch(sortByRating(ratingSortType));

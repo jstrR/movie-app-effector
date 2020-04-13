@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import { logIn } from "../../redux/modules/auth";
 import { GoogleLogin } from "react-google-login";
 import { useLocation, useHistory } from "react-router-dom";
-import { IUserObj } from "../../utils/Interfaces";
+import { IUserObj } from "../../utils/types";
 
 const syncUserWithStorage = (userObj: IUserObj): IUserObj => {
   let currUser;

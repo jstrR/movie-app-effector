@@ -8,7 +8,8 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { addComment } from "../../redux/modules/movie";
 import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
-import { IUserObj } from "../../utils/Interfaces";
+import { IUserObj, IComment } from "../../utils/types";
+import { selectCurrentUser } from "../../redux/selectors/auth";
 
 const stylesUtils = {
   mainColor: "#2196F3",
@@ -45,25 +46,13 @@ const useStyles = makeStyles((theme) => ({
   notchedOutline: {},
 }));
 
-interface ICurrentUserSelector {
-  auth: {
-    currentUser?: IUserObj;
-  };
-}
-
 const CommentsInput = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useTranslation();
   let { id } = useParams();
 
-  const [inputValue, setInputValue] = useState("");
-
-  const selectCurrentUser = (
-    state: ICurrentUserSelector
-  ): IUserObj | undefined => {
-    return state.auth.currentUser;
-  };
+  const [inputValue, setInputValue] = useState<string>("");
 
   const currentUser: IUserObj | undefined = useSelector(
     selectCurrentUser,
@@ -72,8 +61,8 @@ const CommentsInput = () => {
 
   const formSubmit = (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
-    const comment = {
-      movieId: id,
+    const comment: IComment = {
+      movieId: id || null,
       author: currentUser && currentUser.email,
       message: inputValue,
       date: new Date(),

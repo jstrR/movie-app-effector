@@ -1,19 +1,23 @@
-export const BOOKMOVIESESSION = "purchase/bookMovieSession";
-export const SETMOVIEPRICE = "purchase/setMoviePrice";
+import {
+  BOOKMOVIESESSION,
+  SETMOVIEPRICE,
+  purchaseDataActionTypes,
+} from "./types/purchaseDataTypes";
+import { ISessionObject } from "../../utils/types";
 
-export const bookMovieSession = session => ({
+export const bookMovieSession = (session: ISessionObject) => ({
   type: BOOKMOVIESESSION,
-  payload: session
+  payload: session,
 });
 
-export const setMoviePrice = price => ({
+export const setMoviePrice = (price: string) => ({
   type: SETMOVIEPRICE,
-  payload: price
+  payload: price,
 });
 
 const initialState = {};
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = initialState, action: purchaseDataActionTypes) => {
   switch (action.type) {
     case BOOKMOVIESESSION: {
       localStorage.setItem(

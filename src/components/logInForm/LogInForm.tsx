@@ -23,9 +23,9 @@ import { logIn } from "../../redux/modules/auth";
 import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
 import GoogleLogIn from "../../common/googleLogIn/GoogleLogIn";
 import Copyright from "../../common/copyright/Copyright";
-import { IUserObj } from "../../utils/Interfaces";
+import { IUserObj } from "../../utils/types";
 
-const getUser = (mail: string, password: string): IUserObj | {} => {
+const getUser = (mail: string, password: string): IUserObj => {
   let currentUser;
   const usersDb = JSON.parse(localStorage.getItem("usersDb") || "");
   if (Array.isArray(usersDb)) {
@@ -84,8 +84,10 @@ const LogInForm = () => {
   let history = useHistory();
   const { t } = useTranslation(["translaitons", "login/signupPage"]);
   let { from }: any = location.state || { from: { pathname: "/" } };
-  const [userData, setUserData] = useState({ email: "", password: "" });
-  const [showPassword, setShowPassword] = useState(false);
+  const [userData, setUserData] = useState<{ email: string; password: string }>(
+    { email: "", password: "" }
+  );
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const onChange = (e: React.SyntheticEvent<EventTarget>): void => {
     setUserData({
@@ -95,7 +97,7 @@ const LogInForm = () => {
     });
   };
 
-  const [validationError, setValidationError] = useState(false);
+  const [validationError, setValidationError] = useState<boolean>(false);
 
   const formSubmit = (e: React.FormEvent<EventTarget>): void => {
     e.preventDefault();

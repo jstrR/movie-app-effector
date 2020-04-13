@@ -2,7 +2,7 @@ export interface IMovieObject {
   id: number;
   title: string;
   genres?: Array<string>;
-  vote_average?: string;
+  vote_average?: number;
   release_date?: string;
   poster_path?: string;
   overview?: string;
@@ -27,15 +27,30 @@ export interface IUserObj {
 }
 
 export interface IComment {
-  author: string;
-  date: string;
+  movieId: string | null;
+  author?: string;
+  date: Date;
   message: string;
 }
 
-export interface IMovieRatings {
-  movieid?: number;
-  rating?: string;
+export interface IMovieRatingObject {
+  [key: number]: string | null;
+  rating: number;
+}
+
+export interface IMovieRatings extends IMovieRatingObject {
+  movieid: number | null;
   maxrating: number;
-  style?: object;
+  style?: React.CSSProperties;
   disabled?: boolean;
+}
+
+export interface ISessionObject {
+  cinema: string;
+  time: string;
+}
+
+export interface IUserStatus {
+  isAuthenticated: boolean;
+  token?: string;
 }

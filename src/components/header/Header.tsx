@@ -11,32 +11,13 @@ import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
 import FadeMenuNav from "../fadeMenuNav/FadeMenuNav";
 import { logOut } from "../../redux/modules/auth";
 import "./Header.scss";
-
-interface IUserStatusSelector {
-  auth: {
-    isAuthenticated: boolean;
-    currentUser: {
-      token?: string;
-    };
-  };
-}
-
-interface IUserStatus {
-  isAuthenticated: boolean;
-  token?: string;
-}
+import { selectUserStatus } from "../../redux/selectors/auth";
+import { IUserStatus } from "../../utils/types";
 
 const Header = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const { t } = useTranslation();
-
-  const selectUserStatus = (state: IUserStatusSelector): IUserStatus => {
-    return {
-      isAuthenticated: state.auth.isAuthenticated,
-      token: state.auth.currentUser.token,
-    };
-  };
 
   const userStatus: IUserStatus = useSelector(selectUserStatus, shallowEqual);
   const viewsContext = useContext(ViewContext);

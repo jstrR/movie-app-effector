@@ -2,18 +2,17 @@ import React from "react";
 import Rating from "@material-ui/lab/Rating";
 import { useDispatch } from "react-redux";
 
-import { setNewMovieRating } from "../../redux/modules/auth";
-import { updateUsersDb } from "../../redux/modules/auth";
-import { IMovieRatings } from "../../utils/Interfaces";
+import { setNewMovieRating, updateUsersDb } from "../../redux/modules/auth";
+import { IMovieRatings } from "../../utils/types";
 
 const MovieRatings: React.FC<IMovieRatings> = (props) => {
   const dispatch = useDispatch();
-
   const setNewRating = (e: React.SyntheticEvent<EventTarget>) => {
     if (props.movieid) {
       dispatch(
         setNewMovieRating({
           [props.movieid]: (e.target as HTMLInputElement).value,
+          rating: props.rating || 0,
         })
       );
       dispatch(updateUsersDb());

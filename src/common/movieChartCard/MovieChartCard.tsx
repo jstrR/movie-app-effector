@@ -10,7 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import ButtonNav from "../buttonNav/ButtonNav";
 import MovieRatings from "../movieRatings/MovieRatings";
-import { IMovieObject } from "../../utils/Interfaces";
+import { IMovieObject } from "../../utils/types";
 
 const getDateDisplayValue = (
   date: Date,
@@ -93,7 +93,8 @@ const MovieChartCard: React.FC<IMovieChartCardProps> = ({ movieData }) => {
               .join(", ")}
         </Typography>
         <MovieRatings
-          rating={movieData.vote_average}
+          movieid={movieData.id}
+          rating={movieData.vote_average || 0}
           maxrating={10}
           disabled
           style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}

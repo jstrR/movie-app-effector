@@ -22,7 +22,7 @@ const AntSwitch = withStyles({
 
 const SwitchLang = () => {
   const { i18n } = useTranslation();
-  const [lang, setLang] = useState(
+  const [lang, setLang] = useState<boolean>(
     localStorage.getItem("i18nextLng") !== "en-US"
   );
 

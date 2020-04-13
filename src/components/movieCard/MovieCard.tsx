@@ -11,7 +11,12 @@ import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
-import { IMovieObject, IMovieRatings } from "../../utils/Interfaces";
+import { IMovieObject, IMovieRatings } from "../../utils/types";
+import {
+  selectIsAuthenticated,
+  selectUserMoviesRatings,
+} from "../../redux/selectors/auth";
+import { selectActiveMovie } from "../../redux/selectors/movie";
 import movieData from "../../utils/movieData";
 import { setActiveMovie } from "../../redux/modules/movie";
 import Comments from "../comments/Comments";
@@ -85,26 +90,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface ILoggedStatus {
-  auth: {
-    isAuthenticated: boolean;
-  };
-}
-
-interface IMovieRatingsSelector {
-  auth: {
-    currentUser?: {
-      movieRatings?: Array<IMovieRatings>;
-    };
-  };
-}
-
-interface IActiveMovie {
-  movie: {
-    activeMovie?: IMovieObject;
-  };
-}
-
 const MovieCard = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
@@ -113,30 +98,20 @@ const MovieCard = () => {
   let { id } = useParams();
   let { from }: any = location.state || { from: { pathname: "/" } };
 
-  const selectIsAuthenticated = (state: ILoggedStatus): boolean | undefined => {
-    return state.auth.isAuthenticated;
-  };
+  const isAuthenticated: boolean = useSelector(
+    selectIsAuthenticated,
+    shallowEqual
+  );
 
-  const isAuthenticated = useSelector(selectIsAuthenticated, shallowEqual);
+  const userMoviesRatings: Array<IMovieRatings> | undefined = useSelector(
+    selectUserMoviesRatings,
+    shallowEqual
+  );
 
-  const selectUserMoviesRatings = (
-    state: IMovieRatingsSelector
-  ): Array<IMovieRatings> | undefined => {
-    return (
-      state &&
-      state.auth &&
-      state.auth.currentUser &&
-      state.auth.currentUser.movieRatings
-    );
-  };
-
-  const userMoviesRatings = useSelector(selectUserMoviesRatings, shallowEqual);
-
-  const selectActiveMovie = (state: IActiveMovie): IMovieObject | undefined => {
-    return state.movie.activeMovie;
-  };
-
-  const activeMovie = useSelector(selectActiveMovie, shallowEqual);
+  const activeMovie: IMovieObject | undefined = useSelector(
+    selectActiveMovie,
+    shallowEqual
+  );
 
   useEffect(() => {
     const moviesDb = JSON.parse(localStorage.getItem("moviesDb") || "");
@@ -149,7 +124,9 @@ const MovieCard = () => {
     } else {
       localStorage.setItem("moviesDb", JSON.stringify(movieData));
       dispatch(
-        setActiveMovie(movieData.find((movie) => movie.id === Number(id)))
+        setActiveMovie(
+          movieData.find((movie: IMovieObject) => movie.id === Number(id))
+        )
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -206,8 +183,8 @@ const MovieCard = () => {
 
               <Grid container justify="flex-end" alignItems="center">
                 <MovieRatings
-                  movieid={activeMovie && activeMovie.id}
-                  rating={activeMovie && activeMovie.vote_average}
+                  movieid={(activeMovie && activeMovie.id) || null}
+                  rating={(activeMovie && activeMovie.vote_average) || 0}
                   maxrating={10}
                   style={{ fontSize: "2rem" }}
                   disabled={!isAuthenticated}

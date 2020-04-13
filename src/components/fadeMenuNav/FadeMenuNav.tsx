@@ -10,28 +10,17 @@ import MenuIcon from "@material-ui/icons/Menu";
 
 import GoogleLogOut from "../../common/googleLogOut/GoogleLogOut";
 import { logOut } from "../../redux/modules/auth";
+import { selectUserToken } from "../../redux/selectors/auth";
 
 const stylesUtils = {
   mainColor: "#2196F3",
 };
 
-interface ITokenStatusSelector {
-  auth: {
-    currentUser?: {
-      token?: string;
-    };
-  };
-}
-
 const FadeMenuNavigation = () => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
   const { t } = useTranslation();
-
-  const selectUserToken = (state: ITokenStatusSelector): string | undefined => {
-    return state.auth && state.auth.currentUser && state.auth.currentUser.token;
-  };
 
   const userToken: string | undefined = useSelector(
     selectUserToken,

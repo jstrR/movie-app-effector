@@ -5,22 +5,11 @@ import MovieSort from "../movieSort/MovieSort";
 import MoviesChart from "../moviesChart/MoviesChart";
 import movieData from "../../utils/movieData";
 import { setMoviesDb } from "../../redux/modules/movie";
-import { IMovieObject } from "../../utils/Interfaces";
-
-interface IMoviesStorage {
-  movie: {
-    moviesStorage?: Array<IMovieObject>;
-  };
-}
+import { IMovieObject } from "../../utils/types";
+import { selectMoviesStorage } from "../../redux/selectors/movie";
 
 const DefaultMain = () => {
   const dispatch = useDispatch();
-
-  const selectMoviesStorage = (
-    state: IMoviesStorage
-  ): Array<IMovieObject> | undefined => {
-    return state.movie.moviesStorage;
-  };
 
   const moviesStorage: Array<IMovieObject> | undefined = useSelector(
     selectMoviesStorage,

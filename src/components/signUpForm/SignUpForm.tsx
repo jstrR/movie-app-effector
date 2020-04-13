@@ -115,8 +115,8 @@ const SignUpForm = () => {
   const { t } = useTranslation(["translaitons", "login/signupPage"]);
   let { from }: any = location.state || { from: { pathname: "/" } };
 
-  const [validationError, setValidationError] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [validationError, setValidationError] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const [state, reactDispatch] = useReducer(reducer, initialState);
 
