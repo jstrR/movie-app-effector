@@ -35,11 +35,11 @@ export interface IComment {
 
 export interface IMovieRatingObject {
   [key: number]: string | null;
-  rating: number;
 }
 
 export interface IMovieRatings extends IMovieRatingObject {
   movieid: number | null;
+  rating: number;
   maxrating: number;
   style?: React.CSSProperties;
   disabled?: boolean;

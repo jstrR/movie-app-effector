@@ -1,9 +1,11 @@
 import { IUserObj, IMovieRatingObject } from "../../../utils/types";
 
-export const USERLOGIN = "auth/users/userLogIn";
-export const USERLOGOUT = "auth/users/userLogOut";
-export const UPDATEUSERSDB = "auth/users/updateUsersDb";
-export const SETNEWRATING = "auth/movie/setNewRating";
+import {
+  USERLOGIN,
+  USERLOGOUT,
+  UPDATEUSERSDB,
+  SETNEWRATING,
+} from "../../constants/authConst";
 
 interface logInAction {
   type: typeof USERLOGIN;

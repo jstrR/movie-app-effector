@@ -27,7 +27,9 @@ import { IUserObj } from "../../utils/types";
 
 const getUser = (mail: string, password: string): IUserObj => {
   let currentUser;
-  const usersDb = JSON.parse(localStorage.getItem("usersDb") || "");
+  const usersDb = localStorage.getItem("moviesDb")
+    ? JSON.parse(localStorage.getItem("moviesDb") || "")
+    : [];
   if (Array.isArray(usersDb)) {
     currentUser = usersDb.find(
       (user) => user.email === mail && user.password === password

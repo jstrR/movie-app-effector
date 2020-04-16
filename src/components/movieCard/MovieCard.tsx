@@ -114,7 +114,9 @@ const MovieCard = () => {
   );
 
   useEffect(() => {
-    const moviesDb = JSON.parse(localStorage.getItem("moviesDb") || "");
+    const moviesDb = localStorage.getItem("moviesDb")
+      ? JSON.parse(localStorage.getItem("moviesDb") || "")
+      : [];
     if (moviesDb && moviesDb.length) {
       dispatch(
         setActiveMovie(

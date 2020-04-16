@@ -18,7 +18,9 @@ const DefaultMain = () => {
 
   useEffect(() => {
     if (moviesStorage && moviesStorage.length) return;
-    const currentMoviesDb = JSON.parse(localStorage.getItem("moviesDb") || "");
+    const currentMoviesDb = localStorage.getItem("moviesDb")
+      ? JSON.parse(localStorage.getItem("moviesDb") || "")
+      : [];
     if (!currentMoviesDb || !currentMoviesDb.length) {
       localStorage.setItem("moviesDb", JSON.stringify(movieData));
       dispatch(setMoviesDb(movieData));

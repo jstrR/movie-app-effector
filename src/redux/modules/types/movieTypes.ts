@@ -1,10 +1,12 @@
 import { IMovieObject, IComment } from "../../../utils/types";
 
-export const SETACTIVEMOVIE = "movie/setActive";
-export const SETMOVIESDB = "movie/setMoviesDb";
-export const ADDCOMMENT = "movie/addComment";
-export const SORTBYRATING = "movie/sortByRating";
-export const SORTBYDATE = "movie/sortByDate";
+import {
+  SETACTIVEMOVIE,
+  SETMOVIESDB,
+  ADDCOMMENT,
+  SORTBYRATING,
+  SORTBYDATE,
+} from "../../constants/movieConst";
 
 interface setActiveMovieAction {
   type: typeof SETACTIVEMOVIE;

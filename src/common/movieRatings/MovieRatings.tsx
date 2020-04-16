@@ -12,7 +12,6 @@ const MovieRatings: React.FC<IMovieRatings> = (props) => {
       dispatch(
         setNewMovieRating({
           [props.movieid]: (e.target as HTMLInputElement).value,
-          rating: props.rating || 0,
         })
       );
       dispatch(updateUsersDb());

@@ -1,12 +1,11 @@
+import { movieActionTypes, movieState } from "./types/movieTypes";
 import {
   SETACTIVEMOVIE,
   SETMOVIESDB,
   ADDCOMMENT,
   SORTBYRATING,
   SORTBYDATE,
-  movieActionTypes,
-  movieState,
-} from "./types/movieTypes";
+} from "../constants/movieConst";
 import { IMovieObject, IComment } from "../../utils/types";
 
 export const setActiveMovie = (
@@ -36,9 +35,11 @@ export const sortByDate = (type: string): movieActionTypes => ({
   payload: type,
 });
 
-const initialState: movieState = {
+export const initialState: movieState = {
   activeMovie: {},
-  moviesStorage: JSON.parse(localStorage.getItem("moviesDb") || "") || [],
+  moviesStorage: localStorage.getItem("moviesDb")
+    ? JSON.parse(localStorage.getItem("moviesDb") || "")
+    : [],
 };
 
 const reducer = (state = initialState, action: movieActionTypes) => {
@@ -50,7 +51,9 @@ const reducer = (state = initialState, action: movieActionTypes) => {
       return { ...state, moviesStorage: action.payload };
     }
     case ADDCOMMENT: {
-      const movieDb = JSON.parse(localStorage.getItem("moviesDb") || "");
+      const movieDb = localStorage.getItem("moviesDb")
+        ? JSON.parse(localStorage.getItem("moviesDb") || "")
+        : [];
       const movieToUpdate = movieDb.find(
         (movie: IMovieObject) => Number(action.payload.movieId) === movie.id
       );

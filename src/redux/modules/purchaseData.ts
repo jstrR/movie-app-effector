@@ -1,8 +1,8 @@
+import { purchaseDataActionTypes } from "./types/purchaseDataTypes";
 import {
   BOOKMOVIESESSION,
   SETMOVIEPRICE,
-  purchaseDataActionTypes,
-} from "./types/purchaseDataTypes";
+} from "../constants/purchaseDataConst";
 import { ISessionObject } from "../../utils/types";
 
 export const bookMovieSession = (session: ISessionObject) => ({
@@ -15,7 +15,7 @@ export const setMoviePrice = (price: string) => ({
   payload: price,
 });
 
-const initialState = {};
+export const initialState = {};
 
 const reducer = (state = initialState, action: purchaseDataActionTypes) => {
   switch (action.type) {

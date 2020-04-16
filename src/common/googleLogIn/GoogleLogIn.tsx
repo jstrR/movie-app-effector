@@ -7,7 +7,9 @@ import { IUserObj } from "../../utils/types";
 
 const syncUserWithStorage = (userObj: IUserObj): IUserObj => {
   let currUser;
-  let usersDb = JSON.parse(localStorage.getItem("usersDb") || "");
+  let usersDb = localStorage.getItem("moviesDb")
+    ? JSON.parse(localStorage.getItem("moviesDb") || "")
+    : [];
   if (!Array.isArray(usersDb)) usersDb = [];
   currUser = usersDb.find((user: IUserObj) => user.id === userObj.id);
   if (currUser) return currUser;

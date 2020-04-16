@@ -1,11 +1,10 @@
+import { authActionTypes, authState } from "./types/authTypes";
 import {
   USERLOGIN,
   USERLOGOUT,
   UPDATEUSERSDB,
   SETNEWRATING,
-  authActionTypes,
-  authState,
-} from "./types/authTypes";
+} from "../constants/authConst";
 import { IUserObj, IMovieRatingObject } from "../../utils/types";
 
 export const logIn = (value: IUserObj): authActionTypes => ({
@@ -33,7 +32,7 @@ export const setNewMovieRating = (
   payload: value,
 });
 
-const initialState: authState = {
+export const initialState: authState = {
   isAuthenticated: false,
   currentUser: {},
 };
@@ -49,8 +48,12 @@ const reducer = (state = initialState, action: authActionTypes): authState => {
       return { ...state, isAuthenticated: false, currentUser: {} };
     }
     case UPDATEUSERSDB: {
-      const currentUser = JSON.parse(localStorage.getItem("currentUser") || "");
-      const usersDb = JSON.parse(localStorage.getItem("usersDb") || "");
+      const currentUser = localStorage.getItem("currentUser")
+        ? JSON.parse(localStorage.getItem("currentUser") || "")
+        : {};
+      const usersDb = localStorage.getItem("usersDb")
+        ? JSON.parse(localStorage.getItem("usersDb") || "")
+        : [];
       const newUsersDb = usersDb.map((userObj: IUserObj) =>
         currentUser.id === userObj.id ? { ...currentUser } : userObj
       );
@@ -58,7 +61,9 @@ const reducer = (state = initialState, action: authActionTypes): authState => {
       return state;
     }
     case SETNEWRATING: {
-      const user = JSON.parse(localStorage.getItem("currentUser") || "");
+      const user = localStorage.getItem("currentUser")
+        ? JSON.parse(localStorage.getItem("currentUser") || "")
+        : {};
       user.movieRatings = {
         ...user.movieRatings,
         ...action.payload,

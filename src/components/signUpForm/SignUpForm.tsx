@@ -53,7 +53,9 @@ const reducer = (state: IFormState, { field, value }: IField) => {
 };
 
 const addNewUserToStorage = (userObj: IFormState): void => {
-  let usersDb = JSON.parse(localStorage.getItem("usersDb") || "");
+  let usersDb = localStorage.getItem("moviesDb")
+    ? JSON.parse(localStorage.getItem("moviesDb") || "")
+    : [];
   if (!Array.isArray(usersDb)) usersDb = [];
   if (userObj && userObj.id === 0) {
     userObj.id = usersDb.length + 1;
@@ -63,7 +65,9 @@ const addNewUserToStorage = (userObj: IFormState): void => {
 };
 
 const validateNewUser = (userObj: IFormState): boolean => {
-  let usersDb = JSON.parse(localStorage.getItem("usersDb") || "");
+  let usersDb = localStorage.getItem("moviesDb")
+    ? JSON.parse(localStorage.getItem("moviesDb") || "")
+    : [];
   if (Array.isArray(usersDb)) {
     return !usersDb.find((user) => user.email === userObj.email);
   } else return true;
