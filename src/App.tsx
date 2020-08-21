@@ -13,7 +13,7 @@ const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "");
+    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
     if (currentUser && Object.entries(currentUser).length) {
       dispatch(logIn(currentUser));
     }

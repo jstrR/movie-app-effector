@@ -10,8 +10,11 @@ if (process.env.NODE_ENV === `development`) {
   middlewares.push(logger);
 }
 
-const configureStore = compose(
+const middlewareEnhancer = applyMiddleware(...middlewares)
+const composedEnhancers = composeWithDevTools(middlewareEnhancer)
+
+export const configureStore2 = compose(
   composeWithDevTools(applyMiddleware(...middlewares))(createStore)(rootReducer)
 );
 
-export default configureStore;
+export const configureStore = createStore(rootReducer, undefined, composedEnhancers);
