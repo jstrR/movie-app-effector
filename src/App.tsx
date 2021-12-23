@@ -1,13 +1,12 @@
 import React from "react";
 import { useEffect, Suspense } from "react";
-import { Switch, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import ViewContextProvider from "./utils/ViewsContextProvider";
 import { logIn } from "./redux/modules/auth";
 import HomePage from "./views/HomePage";
 import Authorization from "./views/Authorization";
-import NotFound from "./views/NotFound";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -17,19 +16,17 @@ const App = () => {
     if (currentUser && Object.entries(currentUser).length) {
       dispatch(logIn(currentUser));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="App">
       <ViewContextProvider>
         <Suspense fallback="loading">
-          <Switch>
-            <Route exact path="/login" component={Authorization} />
-            <Route exact path="/signup" component={Authorization} />
-            <Route path="/" component={HomePage} />
-            <Route path="*" component={NotFound} />
-          </Switch>
+          <Routes>
+            <Route path="/login/*" element={<Authorization />} />
+            <Route path="/signup/*" element={<Authorization />} />
+            <Route path="/*" element={<HomePage />} />
+          </Routes>
         </Suspense>
       </ViewContextProvider>
     </div>

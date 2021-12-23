@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link, useLocation, useHistory } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
 import Avatar from "@material-ui/core/Avatar";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
@@ -83,7 +84,7 @@ const LogInForm = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   let location = useLocation();
-  let history = useHistory();
+  const navigate = useNavigate();
   const { t } = useTranslation(["translaitons", "login/signupPage"]);
   let { from }: any = location.state || { from: { pathname: "/" } };
   const [userData, setUserData] = useState<{ email: string; password: string }>(
@@ -106,7 +107,7 @@ const LogInForm = () => {
     const currentUser = getUser(userData.email, userData.password);
     if (Object.entries(currentUser).length) {
       dispatch(logIn(currentUser));
-      history.push(from);
+      navigate(from);
     } else setValidationError(true);
   };
 
@@ -188,9 +189,9 @@ const LogInForm = () => {
               </GoogleLogIn>
             </Grid>
           </Box>
-          <Grid container justify="center">
+          <Grid container justifyContent="center">
             <Grid>
-              <Link to="/signup" className={classes.navLink}>
+              <Link to="../../signup" className={classes.navLink}>
                 {t("login/signupPage:dontHaveAccount.login")}
               </Link>
             </Grid>

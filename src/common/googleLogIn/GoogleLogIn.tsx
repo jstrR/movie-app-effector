@@ -1,8 +1,9 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { logIn } from "../../redux/modules/auth";
 import { GoogleLogin } from "react-google-login";
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { logIn } from "../../redux/modules/auth";
 import { IUserObj } from "../../utils/types";
 
 const syncUserWithStorage = (userObj: IUserObj): IUserObj => {
@@ -22,7 +23,7 @@ const syncUserWithStorage = (userObj: IUserObj): IUserObj => {
 
 const GoogleLogIn: React.FC<any> = (props) => {
   const dispatch = useDispatch();
-  let history = useHistory();
+  const navigate = useNavigate();
   let location = useLocation();
   let { from }: any = location.state || { from: { pathname: "/" } };
   const googleAuthSuccess = (response: any): void => {
@@ -36,7 +37,7 @@ const GoogleLogIn: React.FC<any> = (props) => {
       token: response.getAuthResponse().id_token,
     };
     dispatch(logIn(syncUserWithStorage(newUserObj)));
-    history.push(from);
+    navigate(from);
   };
 
   const googleAuthFailure = (response: any): void => {

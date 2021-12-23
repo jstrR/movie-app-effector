@@ -1,7 +1,8 @@
 import React, { useState, useReducer } from "react";
 import { useDispatch } from "react-redux";
-import { Link, useLocation, useHistory } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
 import Avatar from "@material-ui/core/Avatar";
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
@@ -114,8 +115,8 @@ const useStyles = makeStyles((theme) => ({
 const SignUpForm = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  let location = useLocation();
-  let history = useHistory();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { t } = useTranslation(["translaitons", "login/signupPage"]);
   let { from }: any = location.state || { from: { pathname: "/" } };
 
@@ -144,7 +145,7 @@ const SignUpForm = () => {
     if (validateNewUser(newUser)) {
       addNewUserToStorage(newUser);
       dispatch(logIn(newUser));
-      history.push(from);
+      navigate(from);
     } else setValidationError(true);
   };
 
@@ -251,9 +252,9 @@ const SignUpForm = () => {
               </GoogleLogIn>
             </Grid>
           </Box>
-          <Grid container justify="center">
+          <Grid container justifyContent="center">
             <Grid>
-              <Link to="/login" className={classes.navLink}>
+              <Link to="../../login" className={classes.navLink}>
                 {t("login/signupPage:dontHaveAccount.signup")}
               </Link>
             </Grid>

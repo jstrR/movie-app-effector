@@ -3,6 +3,7 @@ import { useParams, useLocation } from "react-router-dom";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { useTranslation } from "react-i18next";
 import ReactPlayer from "react-player";
+
 import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
@@ -155,7 +156,7 @@ const MovieCard = () => {
               xs={12}
               sm={6}
               md={4}
-              justify="flex-end"
+              justifyContent="flex-end"
               alignItems="center">
               <Typography
                 component="span"
@@ -183,7 +184,7 @@ const MovieCard = () => {
                   </Typography>
                 )}
 
-              <Grid container justify="flex-end" alignItems="center">
+              <Grid container justifyContent="flex-end" alignItems="center">
                 <MovieRatings
                   movieid={(activeMovie && activeMovie.id) || null}
                   rating={(activeMovie && activeMovie.vote_average) || 0}
@@ -260,7 +261,7 @@ const MovieCard = () => {
                   />
                 )}
               </Grid>
-              <Grid container wrap="wrap" justify="space-between">
+              <Grid container wrap="wrap" justifyContent="space-between">
                 <Grid item>
                   <Typography
                     component="h4"
@@ -318,7 +319,7 @@ const MovieCard = () => {
                   </Grid>
                 ) : null}
               </Grid>
-              <Grid container justify="space-between">
+              <Grid container justifyContent="space-between">
                 {activeMovie && activeMovie.price ? (
                   <Typography
                     component="h4"
