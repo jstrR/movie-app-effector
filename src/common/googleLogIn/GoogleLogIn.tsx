@@ -1,9 +1,8 @@
 import React from "react";
-import { useDispatch } from "react-redux";
 import { GoogleLogin } from "react-google-login";
 import { useLocation, useNavigate } from "react-router-dom";
 
-import { logIn } from "../../redux/modules/auth";
+import { logIn } from "../../effector/auth";
 import { IUserObj } from "../../utils/types";
 
 const syncUserWithStorage = (userObj: IUserObj): IUserObj => {
@@ -22,7 +21,6 @@ const syncUserWithStorage = (userObj: IUserObj): IUserObj => {
 };
 
 const GoogleLogIn: React.FC<any> = (props) => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   let location = useLocation();
   let { from }: any = location.state || { from: { pathname: "/" } };
@@ -36,7 +34,7 @@ const GoogleLogIn: React.FC<any> = (props) => {
       role: "user",
       token: response.getAuthResponse().id_token,
     };
-    dispatch(logIn(syncUserWithStorage(newUserObj)));
+    logIn(syncUserWithStorage(newUserObj));
     navigate(from);
   };
 

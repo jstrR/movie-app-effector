@@ -1,7 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { useStore } from "effector-react";
+
 import Button from "@material-ui/core/Button";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -9,8 +10,7 @@ import Fade from "@material-ui/core/Fade";
 import MenuIcon from "@material-ui/icons/Menu";
 
 import GoogleLogOut from "../../common/googleLogOut/GoogleLogOut";
-import { logOut } from "../../redux/modules/auth";
-import { selectUserToken } from "../../redux/selectors/auth";
+import { logOut, $currentUser } from "../../effector/auth";
 
 const stylesUtils = {
   mainColor: "#2196F3",
@@ -19,13 +19,9 @@ const stylesUtils = {
 const FadeMenuNavigation = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
-  const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const userToken: string | undefined = useSelector(
-    selectUserToken,
-    shallowEqual
-  );
+  const userToken: string | undefined = useStore($currentUser).token;
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -37,7 +33,7 @@ const FadeMenuNavigation = () => {
 
   const handleLogOut = (): void => {
     handleClose();
-    dispatch(logOut());
+    logOut();
   };
 
   return (

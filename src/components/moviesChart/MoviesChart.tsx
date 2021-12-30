@@ -32,4 +32,4 @@ const MoviesChart: React.FC<IMoviesChartProps> = ({ moviesStorage }) => {
   );
 };
 
-export default MoviesChart;
+export default React.memo(MoviesChart);

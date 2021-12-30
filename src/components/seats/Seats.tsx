@@ -1,7 +1,8 @@
 import React from "react";
-import { shallowEqual, useSelector } from "react-redux";
+import { useStore } from "effector-react";
+
 import { ISessionObject } from "../../utils/types";
-import { selectPurchaseData } from "../../redux/selectors/purchaseData";
+import { $purchaseData } from "../../effector/purchaseData";
 /*const useStyles = makeStyles(theme => ({
   cardGrid: {
     paddingTop: theme.spacing(4),
@@ -12,10 +13,7 @@ import { selectPurchaseData } from "../../redux/selectors/purchaseData";
 const Seats = () => {
   //const classes = useStyles();
 
-  const purchaseData: ISessionObject | undefined = useSelector(
-    selectPurchaseData,
-    shallowEqual
-  );
+  const purchaseData: ISessionObject | undefined = useStore($purchaseData);
 
   //create redirect
   return (

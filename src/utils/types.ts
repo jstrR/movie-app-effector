@@ -24,6 +24,7 @@ export interface IUserObj {
   password: string;
   role?: string;
   token?: string;
+  movieRatings?: IMovieRatingObject;
 }
 
 export interface IComment {

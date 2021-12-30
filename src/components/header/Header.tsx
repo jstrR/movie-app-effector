@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { useStore } from "effector-react";
 
 import SwitchLang from "../../common/switchLang/SwitchLang";
 import GoogleLogOut from "../../common/googleLogIn/GoogleLogIn";
@@ -9,27 +9,22 @@ import { ViewContext } from "../../utils/ViewsContextProvider";
 import ButtonNav from "../../common/buttonNav/ButtonNav";
 import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
 import FadeMenuNav from "../fadeMenuNav/FadeMenuNav";
-import { logOut } from "../../redux/modules/auth";
 import "./Header.scss";
-import { selectUserStatus } from "../../redux/selectors/auth";
-import { IUserStatus } from "../../utils/types";
+import { $currentUser, $isAuthenticated, logOut } from "../../effector/auth";
+import { IUserObj } from "../../utils/types";
 
 const Header = () => {
-  const dispatch = useDispatch();
   const location = useLocation();
   const { t } = useTranslation();
 
-  const userStatus: IUserStatus = useSelector(selectUserStatus, shallowEqual);
+  const user: IUserObj = useStore($currentUser);
+  const isAuthenticated: Boolean = useStore($isAuthenticated);
   const viewsContext = useContext(ViewContext);
-
-  const handleLogOut = (): void => {
-    dispatch(logOut());
-  };
 
   const mobileControlsView = (
     <>
       <ButtonNav to="/profile">{t("common.myProfile")}</ButtonNav>
-      {userStatus && userStatus.token ? (
+      {user?.token  ? (
         <GoogleLogOut
           render={(renderProps: any) => (
             <ButtonGeneric
@@ -41,7 +36,7 @@ const Header = () => {
           )}
         />
       ) : (
-        <ButtonGeneric event="logOut" onClick={handleLogOut}>
+        <ButtonGeneric event="logOut" onClick={logOut}>
           {t("common.logOut")}
         </ButtonGeneric>
       )}
@@ -62,7 +57,7 @@ const Header = () => {
 
       <div className="header__controls">
         <SwitchLang />
-        {userStatus.isAuthenticated ? (
+        {isAuthenticated ? (
           <> {profileControlsViewy}</>
         ) : (
           <>

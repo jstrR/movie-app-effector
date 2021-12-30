@@ -1,5 +1,4 @@
 import React, { useState, useReducer } from "react";
-import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -19,7 +18,7 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 
-import { logIn } from "../../redux/modules/auth";
+import { logIn } from "../../effector/auth";
 import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
 import GoogleLogIn from "../../common/googleLogIn/GoogleLogIn";
 import Copyright from "../../common/copyright/Copyright";
@@ -54,8 +53,8 @@ const reducer = (state: IFormState, { field, value }: IField) => {
 };
 
 const addNewUserToStorage = (userObj: IFormState): void => {
-  let usersDb = localStorage.getItem("moviesDb")
-    ? JSON.parse(localStorage.getItem("moviesDb") || "")
+  let usersDb = localStorage.getItem("usersDb")
+    ? JSON.parse(localStorage.getItem("usersDb") || "")
     : [];
   if (!Array.isArray(usersDb)) usersDb = [];
   if (userObj && userObj.id === 0) {
@@ -66,8 +65,8 @@ const addNewUserToStorage = (userObj: IFormState): void => {
 };
 
 const validateNewUser = (userObj: IFormState): boolean => {
-  let usersDb = localStorage.getItem("moviesDb")
-    ? JSON.parse(localStorage.getItem("moviesDb") || "")
+  let usersDb = localStorage.getItem("usersDb")
+    ? JSON.parse(localStorage.getItem("usersDb") || "")
     : [];
   if (Array.isArray(usersDb)) {
     return !usersDb.find((user) => user.email === userObj.email);
@@ -114,7 +113,6 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUpForm = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation(["translaitons", "login/signupPage"]);
@@ -144,7 +142,7 @@ const SignUpForm = () => {
     }
     if (validateNewUser(newUser)) {
       addNewUserToStorage(newUser);
-      dispatch(logIn(newUser));
+      logIn(newUser);
       navigate(from);
     } else setValidationError(true);
   };

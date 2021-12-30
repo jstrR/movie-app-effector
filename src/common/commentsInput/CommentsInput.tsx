@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import { useTranslation } from "react-i18next";
+import { useStore } from "effector-react";
+
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { addComment } from "../../redux/modules/movie";
 import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
 import { IUserObj, IComment } from "../../utils/types";
-import { selectCurrentUser } from "../../redux/selectors/auth";
+import { addComment } from "../../effector/movie";
+import { $currentUser } from "../../effector/auth";
 
 const stylesUtils = {
   mainColor: "#2196F3",
@@ -48,26 +49,22 @@ const useStyles = makeStyles((theme) => ({
 
 const CommentsInput = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const { t } = useTranslation();
   let { id } = useParams();
 
   const [inputValue, setInputValue] = useState<string>("");
 
-  const currentUser: IUserObj | undefined = useSelector(
-    selectCurrentUser,
-    shallowEqual
-  );
+  const currentUser: IUserObj = useStore($currentUser);
 
   const formSubmit = (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
     const comment: IComment = {
       movieId: id || null,
-      author: currentUser && currentUser.email,
+      author: currentUser?.email,
       message: inputValue,
       date: new Date(),
     };
-    dispatch(addComment(comment));
+    addComment(comment);
     setInputValue("");
   };
 

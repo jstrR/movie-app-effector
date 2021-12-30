@@ -1,6 +1,6 @@
 import React from "react";
-import { shallowEqual, useSelector } from "react-redux";
 import { useLocation, Navigate, Routes, Route } from "react-router-dom";
+import { useStore } from "effector-react";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Paper from "@material-ui/core/Paper";
@@ -10,11 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import SignUpForm from "../components/signUpForm/SignUpForm";
 import LogInForm from "../components/logInForm/LogInForm";
 
-interface ILoggedStatusSelector {
-  auth: {
-    isAuthenticated: boolean;
-  };
-}
+import { $isAuthenticated } from "../effector/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,15 +33,11 @@ const Authorization = () => {
   const classes = useStyles();
   let location = useLocation();
 
-  const selectLoggedStatus = (state: ILoggedStatusSelector): boolean => {
-    return state.auth.isAuthenticated;
-  };
-
-  const loggedStatus: boolean = useSelector(selectLoggedStatus, shallowEqual);
+  const isAuthenticated: Boolean = useStore($isAuthenticated);
 
   return (
     <>
-      {loggedStatus && (
+      {isAuthenticated && (
         <Routes>
           <Route
             children={() => <Navigate to="/" replace state={{ from: location }}/>}

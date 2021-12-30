@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -20,7 +19,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
-import { logIn } from "../../redux/modules/auth";
+import { logIn } from "../../effector/auth";
 import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
 import GoogleLogIn from "../../common/googleLogIn/GoogleLogIn";
 import Copyright from "../../common/copyright/Copyright";
@@ -28,8 +27,8 @@ import { IUserObj } from "../../utils/types";
 
 const getUser = (mail: string, password: string): IUserObj => {
   let currentUser;
-  const usersDb = localStorage.getItem("moviesDb")
-    ? JSON.parse(localStorage.getItem("moviesDb") || "")
+  const usersDb = localStorage.getItem("usersDb")
+    ? JSON.parse(localStorage.getItem("usersDb") || "")
     : [];
   if (Array.isArray(usersDb)) {
     currentUser = usersDb.find(
@@ -82,7 +81,6 @@ const useStyles = makeStyles((theme) => ({
 
 const LogInForm = () => {
   const classes = useStyles();
-  const dispatch = useDispatch();
   let location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation(["translaitons", "login/signupPage"]);
@@ -106,7 +104,7 @@ const LogInForm = () => {
     e.preventDefault();
     const currentUser = getUser(userData.email, userData.password);
     if (Object.entries(currentUser).length) {
-      dispatch(logIn(currentUser));
+      logIn(currentUser);
       navigate(from);
     } else setValidationError(true);
   };

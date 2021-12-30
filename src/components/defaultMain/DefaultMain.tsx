@@ -1,20 +1,14 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
+import { useStore } from "effector-react";
 
 import MovieSort from "../movieSort/MovieSort";
 import MoviesChart from "../moviesChart/MoviesChart";
 import movieData from "../../utils/movieData";
-import { setMoviesDb } from "../../redux/modules/movie";
+import { $moviesStorage, setMoviesDb } from "../../effector/movie";
 import { IMovieObject } from "../../utils/types";
-import { selectMoviesStorage } from "../../redux/selectors/movie";
 
 const DefaultMain = () => {
-  const dispatch = useDispatch();
-
-  const moviesStorage: Array<IMovieObject> | undefined = useSelector(
-    selectMoviesStorage,
-    shallowEqual
-  );
+  const moviesStorage: Array<IMovieObject> | [] | null= useStore($moviesStorage);
 
   useEffect(() => {
     if (moviesStorage && moviesStorage.length) return;
@@ -23,10 +17,9 @@ const DefaultMain = () => {
       : [];
     if (!currentMoviesDb || !currentMoviesDb.length) {
       localStorage.setItem("moviesDb", JSON.stringify(movieData));
-      dispatch(setMoviesDb(movieData));
-    } else dispatch(setMoviesDb(currentMoviesDb));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      setMoviesDb(movieData);
+    } else setMoviesDb(currentMoviesDb);
+  }, [moviesStorage]);
 
   return (
     <main>

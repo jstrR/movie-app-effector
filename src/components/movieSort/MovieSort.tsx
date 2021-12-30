@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
@@ -9,8 +8,7 @@ import KeyboardArrowUpOutlinedIcon from "@material-ui/icons/KeyboardArrowUpOutli
 import KeyboardArrowDownOutlinedIcon from "@material-ui/icons/KeyboardArrowDownOutlined";
 import IconButton from "@material-ui/core/IconButton";
 
-import { sortByRating } from "../../redux/modules/movie";
-import { sortByDate } from "../../redux/modules/movie";
+import { sortByRating, sortByDate } from "../../effector/movie";
 
 const useDidMount = (): boolean => {
   const [didMount, setDidMount] = useState(false);
@@ -18,7 +16,9 @@ const useDidMount = (): boolean => {
   return didMount;
 };
 
-const useStyles = makeStyles((theme) => ({
+type sortType = "asc" | "desc";
+
+const useStyles = makeStyles({
   item: {
     alignItems: "center",
     justifyContent: "center",
@@ -32,26 +32,25 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: "rgba(33, 150, 243, 0.11)",
     },
   },
-}));
+});
 
 const MovieSort = () => {
-  const dispatch = useDispatch();
   const classes = useStyles();
   const didMount = useDidMount();
   const { t } = useTranslation();
 
-  const [ratingSortType, setRatingSortType] = React.useState<string>("desc");
-  const [dateSortType, setDateSortType] = React.useState<string>("desc");
+  const [ratingSortType, setRatingSortType] = useState<sortType>("desc");
+  const [dateSortType, setDateSortType] = useState<sortType>("desc");
 
   useEffect(() => {
-    dispatch(sortByRating(ratingSortType));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    sortByRating(ratingSortType);
   }, [ratingSortType]);
 
   useEffect(() => {
-    if (didMount) dispatch(sortByDate(dateSortType));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateSortType]);
+    if (didMount) {
+      sortByDate(dateSortType);
+    }
+  }, [dateSortType, didMount]);
 
   return (
     <Container maxWidth="md">
