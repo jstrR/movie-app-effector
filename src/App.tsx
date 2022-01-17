@@ -15,6 +15,48 @@ const App = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const func = async () => {
+      const diceQuery = `query RollDice($sides: Int, $rolls: Int!) {
+        getDie(numSides: $sides) {
+          rollOnce,
+          roll(numRolls: $rolls)
+        }
+      }`;
+      await fetch('http://localhost:4000/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ query: diceQuery, variables: { sides: 6, rolls: 3 }})
+      })
+
+      const messageMutation = `mutation CreateMessage($input: MessageInput) {
+        createMessage(input: $input) {
+          id
+        }
+      }`;
+      await fetch('http://localhost:4000/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          query: messageMutation,
+          variables: {
+            input: {
+              author: 'test author',
+              content: 'test content',
+            }
+          }
+        })
+      })
+    };
+    func();
+  }, []);
+
   return (
     <div className="App">
       <ViewContextProvider>
