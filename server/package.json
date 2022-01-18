@@ -6,9 +6,12 @@
   "scripts": {
     "test": "npm test"
   },
+  "type": "module",
   "author": "Sergey Rovkach",
   "license": "ISC",
   "dependencies": {
+    "apollo-server-core": "^3.6.1",
+    "apollo-server-express": "^3.6.1",
     "cors": "^2.8.5",
     "express": "^4.17.2",
     "express-graphql": "^0.12.0",

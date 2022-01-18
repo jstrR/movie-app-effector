@@ -1,9 +1,11 @@
-var express = require('express');
-var { graphqlHTTP } = require('express-graphql');
-var { buildSchema } = require('graphql');
-var cors = require('cors');
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
+import { ApolloServer } from 'apollo-server-express';
+import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
+import { buildSchema } from 'graphql';
 
-var schema = buildSchema(`
+const schema = buildSchema(`
   input MessageInput {
     content: String
     author: String
@@ -50,54 +52,64 @@ class RandomDie {
   }
 
   roll({numRolls}) {
-    var output = [];
-    for (var i = 0; i < numRolls; i++) {
+    const output = [];
+    for (let i = 0; i < numRolls; i++) {
       output.push(this.rollOnce());
     }
     return output;
   }
 }
 
-var fakeDatabase = {};
+const fakeDatabase = {};
 
-var root = {
-  getDie: ({numSides}) => {
-    return new RandomDie(numSides || 6);
+const root = {
+  Query: {
+    getDie: ({numSides}) => {
+      return new RandomDie(numSides || 6);
+    },
+    getMessage: ({id}) => {
+      if (!fakeDatabase[id]) {
+        throw new Error('no message exists with id ' + id);
+      }
+      return new Message(id, fakeDatabase[id]);
+    },
   },
-  getMessage: ({id}) => {
-    if (!fakeDatabase[id]) {
-      throw new Error('no message exists with id ' + id);
-    }
-    return new Message(id, fakeDatabase[id]);
-  },
-  createMessage: ({input}) => {
-    var id = require('crypto').randomBytes(10).toString('hex');
+  Mutation: {
+    createMessage: ({input}) => {
+      const id = require('crypto').randomBytes(10).toString('hex');
 
-    fakeDatabase[id] = input;
-    return new Message(id, input);
-  },
-  updateMessage: ({id, input}) => {
-    if (!fakeDatabase[id]) {
-      throw new Error('no message exists with id ' + id);
-    }
-    fakeDatabase[id] = input;
-    return new Message(id, input);
+      fakeDatabase[id] = input;
+      return new Message(id, input);
+    },
+    updateMessage: ({id, input}) => {
+      if (!fakeDatabase[id]) {
+        throw new Error('no message exists with id ' + id);
+      }
+      fakeDatabase[id] = input;
+      return new Message(id, input);
+    },
   },
 };
 
-var corsOptions = {
+
+async function startApolloServer(typeDefs, resolvers) {
+  const corsOptions = {
     origin: 'http://localhost:3000',
     optionsSuccessStatus: 200
   }
 
-var app = express();
+  const app = express();
+  app.use(cors(corsOptions));
+  const httpServer = http.createServer(app);
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  });
+  await server.start();
+  server.applyMiddleware({ app });
+  await new Promise(resolve => httpServer.listen({ port: 4000 }, resolve));
+  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
+}
 
-app.use(cors(corsOptions));
-
-app.use('/graphql', graphqlHTTP({
-  schema: schema,
-  rootValue: root,
-  graphiql: true,
-}));
-app.listen(4000);
-console.log('Running a GraphQL API server at http://localhost:4000/graphql');
+startApolloServer(schema, root);
