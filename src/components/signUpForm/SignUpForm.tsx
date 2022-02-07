@@ -1,6 +1,7 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useEffect, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useStore } from "effector-react";
 
 import Avatar from "@material-ui/core/Avatar";
 import TextField from "@material-ui/core/TextField";
@@ -18,59 +19,30 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import IconButton from "@material-ui/core/IconButton";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 
-import { logIn } from "../../effector/auth";
+import { $isAuthenticated, $signUpError, signUp } from "../../effector/auth";
 import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
 import GoogleLogIn from "../../common/googleLogIn/GoogleLogIn";
 import Copyright from "../../common/copyright/Copyright";
-
-interface IFormState {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  role?: string;
-  token?: string;
-}
+import { User } from "../../api";
 
 interface IField {
   field: string;
   value?: any;
 }
 
-const initialState = {
-  id: 0,
+const initialState: User = {
+  id: "0",
   firstName: "",
   lastName: "",
   email: "",
   password: "",
   role: "",
   token: "",
+  movieRatings: []
 };
 
-const reducer = (state: IFormState, { field, value }: IField) => {
+const reducer = (state: User, { field, value }: IField) => {
   return { ...state, [field]: value };
-};
-
-const addNewUserToStorage = (userObj: IFormState): void => {
-  let usersDb = localStorage.getItem("usersDb")
-    ? JSON.parse(localStorage.getItem("usersDb") || "")
-    : [];
-  if (!Array.isArray(usersDb)) usersDb = [];
-  if (userObj && userObj.id === 0) {
-    userObj.id = usersDb.length + 1;
-  }
-  usersDb.push(userObj);
-  localStorage.setItem("usersDb", JSON.stringify(usersDb));
-};
-
-const validateNewUser = (userObj: IFormState): boolean => {
-  let usersDb = localStorage.getItem("usersDb")
-    ? JSON.parse(localStorage.getItem("usersDb") || "")
-    : [];
-  if (Array.isArray(usersDb)) {
-    return !usersDb.find((user) => user.email === userObj.email);
-  } else return true;
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -115,13 +87,15 @@ const SignUpForm = () => {
   const classes = useStyles();
   const location = useLocation();
   const navigate = useNavigate();
-  const { t } = useTranslation(["translaitons", "login/signupPage"]);
-  let { from }: any = location.state || { from: { pathname: "/" } };
+  const { t } = useTranslation(["translations", "login/signupPage"]);
+  const { from }: any = useMemo(() => location.state || { from: { pathname: "/" } }, [location.state]);
 
   const [validationError, setValidationError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const [state, reactDispatch] = useReducer(reducer, initialState);
+  const isAuthenticated = useStore($isAuthenticated);
+  const signUpError = useStore($signUpError);
 
   const onChange = (e: React.SyntheticEvent<EventTarget>): void => {
     reactDispatch({
@@ -140,12 +114,20 @@ const SignUpForm = () => {
     } else {
       newUser.role = "user";
     }
-    if (validateNewUser(newUser)) {
-      addNewUserToStorage(newUser);
-      logIn(newUser);
-      navigate(from);
-    } else setValidationError(true);
+    signUp(newUser);
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(from);
+    }
+  }, [from, isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (signUpError) {
+      setValidationError(true);
+    }
+  }, [signUpError]);
 
   return (
     <>
@@ -245,7 +227,7 @@ const SignUpForm = () => {
               </Typography>
             </Box>
             <Grid container>
-              <GoogleLogIn className={classes.googleBtn}>
+              <GoogleLogIn className={classes.googleBtn} onLogin={signUp}>
                 {t("login/signupPage:googleBtn.signup")}
               </GoogleLogIn>
             </Grid>

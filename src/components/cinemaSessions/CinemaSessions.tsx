@@ -5,9 +5,7 @@ import { bookMovieSession } from "../../effector/purchaseData";
 import { ISessionObject } from "../../utils/types";
 
 interface ICinemaSessionsProps {
-  cinemaSessions?: Array<{
-    cinema?: Array<string>;
-  }>;
+  cinemaSessions?: readonly any[] | [];
 }
 
 const CinemaSessions: React.FC<ICinemaSessionsProps> = ({ cinemaSessions }) => {

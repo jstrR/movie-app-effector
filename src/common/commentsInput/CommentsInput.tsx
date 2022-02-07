@@ -8,7 +8,7 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 
 import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
-import { IUserObj, IComment } from "../../utils/types";
+import { Comment } from "../../api";
 import { addComment } from "../../effector/movie";
 import { $currentUser } from "../../effector/auth";
 
@@ -54,13 +54,13 @@ const CommentsInput = () => {
 
   const [inputValue, setInputValue] = useState<string>("");
 
-  const currentUser: IUserObj = useStore($currentUser);
+  const currentUser = useStore($currentUser);
 
   const formSubmit = (e: React.FormEvent<EventTarget>) => {
     e.preventDefault();
-    const comment: IComment = {
-      movieId: id || null,
-      author: currentUser?.email,
+    const comment: Comment = {
+      movieId: id || '',
+      author: currentUser?.email || '',
       message: inputValue,
       date: new Date(),
     };
@@ -79,7 +79,7 @@ const CommentsInput = () => {
               notchedOutline: classes.notchedOutline,
             },
           }}
-          label={currentUser && currentUser.email}
+          label={currentUser?.email}
           className={classes.textField}
           placeholder={t("comments:typeComment")}
           multiline

@@ -1,6 +1,7 @@
 export interface IMovieObject {
   id: number;
   title: string;
+  tagline: string;
   genres?: Array<string>;
   vote_average?: number;
   release_date?: string;

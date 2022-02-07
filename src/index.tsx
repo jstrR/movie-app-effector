@@ -1,14 +1,14 @@
 import React from "react";
 import * as ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
-import "./i18n";
 
+import "./i18n";
 import App from "./App";
 import "./index.scss";
 
 ReactDOM.render(
-    <Router>
-      <App />
-    </Router>,
+  <Router>
+    <App />
+  </Router>,
   document.getElementById("root")
 );

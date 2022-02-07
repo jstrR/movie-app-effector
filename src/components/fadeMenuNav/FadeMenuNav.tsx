@@ -21,7 +21,7 @@ const FadeMenuNavigation = () => {
   const open = Boolean(anchorEl);
   const { t } = useTranslation();
 
-  const userToken: string | undefined = useStore($currentUser).token;
+  const userToken = useStore($currentUser)?.token;
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);

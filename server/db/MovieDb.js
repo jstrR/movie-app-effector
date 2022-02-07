@@ -1,4 +1,4 @@
-const movieDb = [
+module.exports = [
   {
     id: 447365,
     title: "Guardians of the Galaxy Vol. 3",
@@ -255,4 +255,3 @@ const movieDb = [
   }
 ];
 
-export default movieDb;

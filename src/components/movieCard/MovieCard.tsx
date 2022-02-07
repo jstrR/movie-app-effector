@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ReactPlayer from "react-player";
-import { useStore } from "effector-react";
+import { useStore, useStoreMap } from "effector-react";
 
 import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -12,13 +12,11 @@ import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 
-import { IMovieObject, IMovieRatingObject } from "../../utils/types";
 import {
   $currentUser,
   $isAuthenticated,
 } from "../../effector/auth";
-import { $activeMovie, setActiveMovie } from "../../effector/movie";
-import movieData from "../../utils/movieData";
+import { $activeMovie, fetchMovieFx } from "../../effector/movie";
 import Comments from "../comments/Comments";
 import MovieRatings from "../../common/movieRatings/MovieRatings";
 import ButtonNav from "../../common/buttonNav/ButtonNav";
@@ -97,19 +95,13 @@ const MovieCard = () => {
   let { id } = useParams();
   let { from }: any = location.state || { from: { pathname: "/" } };
 
-  const isAuthenticated: Boolean = useStore($isAuthenticated);
-  const userMoviesRatings: IMovieRatingObject | undefined = useStore($currentUser)?.movieRatings;
-  const activeMovie: IMovieObject | null = useStore($activeMovie);
+  const isAuthenticated = useStore($isAuthenticated);
+  const activeMovie = useStore($activeMovie);
+  const userMovieRating = useStoreMap({ store: $currentUser, keys: [activeMovie?.id], fn: (user) => user?.movieRatings?.find((movie) => movie?.movieId === activeMovie?.id)});
 
   useEffect(() => {
-    const moviesDb = localStorage.getItem("moviesDb")
-      ? JSON.parse(localStorage.getItem("moviesDb") || "")
-      : [];
-    if (moviesDb && moviesDb.length) {
-      setActiveMovie(moviesDb.find((movie: IMovieObject) => movie.id === Number(id)) || null);
-    } else {
-      localStorage.setItem("moviesDb", JSON.stringify(movieData));
-      setActiveMovie(movieData.find((movie: IMovieObject) => movie.id === Number(id)) || null);
+    if (id) {
+      fetchMovieFx(id);
     }
   }, [id]);
 
@@ -140,7 +132,7 @@ const MovieCard = () => {
                 component="span"
                 variant="h6"
                 style={{ color: stylesUtils.mainColor }}>
-                {activeMovie?.vote_average}
+                {userMovieRating?.rating || activeMovie?.vote_average}
               </Typography>
               <Typography
                 component="span"
@@ -149,22 +141,10 @@ const MovieCard = () => {
                 /10
               </Typography>
 
-              {userMoviesRatings &&
-                activeMovie?.id &&
-                userMoviesRatings[activeMovie.id] && (
-                  <Typography
-                    component="span"
-                    variant="h6"
-                    style={{ color: stylesUtils.captionColor }}>
-                    &nbsp;({t("translations:common.ratingsPrevious")}&nbsp;
-                    {userMoviesRatings[activeMovie.id]})
-                  </Typography>
-                )}
-
               <Grid container justifyContent="flex-end" alignItems="center">
                 <MovieRatings
-                  movieid={(activeMovie?.id) || null}
-                  rating={(activeMovie?.vote_average) || 0}
+                  movieId={activeMovie?.id || ''}
+                  rating={userMovieRating?.rating || activeMovie?.vote_average || 0}
                   maxrating={10}
                   style={{ fontSize: "2rem" }}
                   disabled={!isAuthenticated}
@@ -190,8 +170,8 @@ const MovieCard = () => {
               variant="subtitle2"
               style={{ color: stylesUtils.lightMainColor }}>
               {activeMovie?.genres
-                  ?.map((genre: string) => t(`movieCommon:genres.${genre}`))
-                  .join(", ")}
+                ?.map((genre: string) => t(`movieCommon:genres.${genre}`))
+                .join(", ")}
             </Typography>
           </Grid>
           <Grid container spacing={5} style={{ marginTop: "1rem" }}>
@@ -207,9 +187,7 @@ const MovieCard = () => {
               </Card>
             </Grid>
             <Grid item xs={12} sm={6} md={7}>
-              <CinemaSessions
-                cinemaSessions={activeMovie?.cinemas}
-              />
+              <CinemaSessions cinemaSessions={activeMovie?.cinemas}/>
               <Typography
                 component="div"
                 variant="h5"
@@ -226,7 +204,7 @@ const MovieCard = () => {
               <Grid style={{ marginBottom: "1rem" }}>
                 {ReactPlayer.canPlay(activeMovie?.trailerUrl || "") && (
                   <ReactPlayer
-                    url={activeMovie?.trailerUrl}
+                    url={activeMovie?.trailerUrl || ""}
                     controls
                     width="100%"
                   />

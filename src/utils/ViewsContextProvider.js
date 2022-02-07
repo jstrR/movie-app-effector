@@ -6,7 +6,7 @@ const ViewContextProvider = props => {
   const [isMobile, setMobile] = useState(
     window.matchMedia("(max-width: 960px)").matches
   );
-
+// change resize
   useEffect(() => {
     window.addEventListener("resize", () => {
       setMobile(window.matchMedia("(max-width: 960px)").matches);

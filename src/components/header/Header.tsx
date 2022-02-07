@@ -11,14 +11,13 @@ import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
 import FadeMenuNav from "../fadeMenuNav/FadeMenuNav";
 import "./Header.scss";
 import { $currentUser, $isAuthenticated, logOut } from "../../effector/auth";
-import { IUserObj } from "../../utils/types";
 
 const Header = () => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  const user: IUserObj = useStore($currentUser);
-  const isAuthenticated: Boolean = useStore($isAuthenticated);
+  const user = useStore($currentUser);
+  const isAuthenticated = useStore($isAuthenticated);
   const viewsContext = useContext(ViewContext);
 
   const mobileControlsView = (

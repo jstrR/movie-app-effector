@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useStore } from "effector-react";
 
 import Avatar from "@material-ui/core/Avatar";
 import TextField from "@material-ui/core/TextField";
@@ -19,24 +20,10 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
-import { logIn } from "../../effector/auth";
+import { $isAuthenticated, $logInError, logIn } from "../../effector/auth";
 import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
 import GoogleLogIn from "../../common/googleLogIn/GoogleLogIn";
 import Copyright from "../../common/copyright/Copyright";
-import { IUserObj } from "../../utils/types";
-
-const getUser = (mail: string, password: string): IUserObj => {
-  let currentUser;
-  const usersDb = localStorage.getItem("usersDb")
-    ? JSON.parse(localStorage.getItem("usersDb") || "")
-    : [];
-  if (Array.isArray(usersDb)) {
-    currentUser = usersDb.find(
-      (user) => user.email === mail && user.password === password
-    );
-  }
-  return currentUser ? currentUser : {};
-};
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -84,11 +71,13 @@ const LogInForm = () => {
   let location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation(["translaitons", "login/signupPage"]);
-  let { from }: any = location.state || { from: { pathname: "/" } };
+  const { from }: any = useMemo(() => location.state || { from: { pathname: "/" } }, [location.state]);
   const [userData, setUserData] = useState<{ email: string; password: string }>(
     { email: "", password: "" }
   );
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const isAuthenticated = useStore($isAuthenticated);
+  const logInError = useStore($logInError);
 
   const onChange = (e: React.SyntheticEvent<EventTarget>): void => {
     setUserData({
@@ -102,12 +91,20 @@ const LogInForm = () => {
 
   const formSubmit = (e: React.FormEvent<EventTarget>): void => {
     e.preventDefault();
-    const currentUser = getUser(userData.email, userData.password);
-    if (Object.entries(currentUser).length) {
-      logIn(currentUser);
-      navigate(from);
-    } else setValidationError(true);
+    logIn({ email: userData.email, password: userData.password, token: '' });
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(from);
+    }
+  }, [from, isAuthenticated, navigate]);
+
+  useEffect(() => {
+    if (logInError) {
+      setValidationError(true);
+    }
+  }, [logInError]);
 
   return (
     <>
@@ -182,7 +179,7 @@ const LogInForm = () => {
               </Typography>
             </Box>
             <Grid container>
-              <GoogleLogIn className={classes.googleBtn}>
+              <GoogleLogIn className={classes.googleBtn} onLogin={logIn}>
                 {t("login/signupPage:googleBtn.logIn")}
               </GoogleLogIn>
             </Grid>

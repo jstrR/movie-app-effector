@@ -1,57 +1,91 @@
-import { createStore, createEvent, sample } from 'effector'
+import { createStore, createEvent, createEffect, sample } from 'effector';
 
-import { IUserObj, IMovieRatingObject } from "../utils/types";
+import { GqlClient, MovieRatings, User, Query, Mutation, getUser, addUser, updateUser } from "../api";
 
-export const logIn = createEvent<IUserObj>();
+type UserLogin = {
+  email: String,
+  password: String,
+  token: String
+}
+
+const getLocalStorageUser = () => JSON.parse(localStorage.getItem('currentUser') || 'null');
+
+export const logIn = createEvent<UserLogin>();
+export const signUp = createEvent<User>();
 export const logOut = createEvent<void>();
-// export const updateUsersDb = createEvent<void>();
-export const setNewRating = createEvent<IMovieRatingObject>();
+export const setNewRating = createEvent<MovieRatings>();
 
-logIn.watch(payload => localStorage.setItem('currentUser', JSON.stringify(payload)));
-logOut.watch(() => localStorage.setItem('currentUser', JSON.stringify({})));
+export const fetchUserFx = createEffect(async ({ email, password, token }: UserLogin) => {
+  const req: Query = await GqlClient(getUser, {
+    variables: { email, password, token },
+  });
+  return req.user;
+});
 
-// updateUsersDb.watch(() => {
-// 	const currentUser = localStorage.getItem("currentUser")
-// 		? JSON.parse(localStorage.getItem("currentUser") || "")
-// 		: {};
-// 	const usersDb = localStorage.getItem("usersDb")
-// 		? JSON.parse(localStorage.getItem("usersDb") || "")
-// 		: [];
-// 	const newUsersDb = usersDb.map((userObj: IUserObj) =>
-// 		currentUser.id === userObj.id ? { ...currentUser } : userObj
-// 	);
-// 	localStorage.setItem("usersDb", JSON.stringify(newUsersDb));
-// });
+export const signUpUserFx = createEffect(async (user: User) => {
+  const req: Mutation = await GqlClient(addUser, {
+    variables: { ...user },
+  });
+  return req.addUser;
+});
 
-export const $currentUser = createStore<IUserObj>(JSON.parse(localStorage.getItem('currentUser') || '{}') || {})
-	.on(logIn, (_, payload) => payload)
-	.reset(logOut);
+export const updateUserFx = createEffect(async (user: User) => {
+  const req: Mutation = await GqlClient(updateUser, {
+    variables: { ...user },
+  });
+  return req.updateUser;
+});
 
-export const $isAuthenticated = createStore<Boolean>(false)
-	.on(logIn, () => true)
-	.reset(logOut);
 
-$currentUser.watch(currentUser => {
-  const usersDb = localStorage.getItem("usersDb")
-    ? JSON.parse(localStorage.getItem("usersDb") || '[]')
-    : [];
-  const newUsersDb = usersDb.map((userObj: IUserObj) =>
-    currentUser.id === userObj.id ? { ...currentUser } : userObj
-  );
+fetchUserFx.doneData.watch(payload => localStorage.setItem('currentUser', JSON.stringify(payload)));
+signUpUserFx.doneData.watch(payload => localStorage.setItem('currentUser', JSON.stringify(payload)));
+updateUserFx.doneData.watch(payload => localStorage.setItem('currentUser', JSON.stringify(payload)));
+logOut.watch(() => localStorage.removeItem('currentUser'));
 
-  localStorage.setItem("usersDb", JSON.stringify(newUsersDb));
+export const $currentUser = createStore<User | null>(getLocalStorageUser())
+  .on(fetchUserFx.doneData, (_, user) => user || null)
+  .on(signUpUserFx.doneData, (_, user) => user || null)
+  .on(updateUserFx.doneData, (_, user) => user || null)
+  .reset(logOut);
+
+  export const $logInError = createStore<object | null>(null)
+  .on(fetchUserFx.failData, (_, error) => error)
+  .reset(fetchUserFx.doneData);
+
+export const $signUpError = createStore<object | null>(null)
+  .on(signUpUserFx.failData, (_, error) => error)
+  .reset(signUpUserFx.doneData);
+
+export const $isAuthenticated = createStore<Boolean>(!!getLocalStorageUser())
+  .on($currentUser, (_, user) => !!user)
+  .reset(logOut);
+
+sample({
+  source: logIn,
+  target: fetchUserFx,
 });
 
 sample({
-	clock: setNewRating,
-	source: $currentUser,
-	fn: (user, newRatings : IMovieRatingObject) => {
-		const updatedUser = { ...user };
-		updatedUser.movieRatings = {
-			...user.movieRatings,
-			...newRatings,
-		};
-		return updatedUser;
-	},
-	target: $currentUser,
+  source: signUp,
+  target: signUpUserFx,
+});
+ 
+sample({
+  clock: setNewRating,
+  source: $currentUser,
+  filter: user => !!user,
+  fn: (user, newRatings: MovieRatings) => {
+    const updatedUser = { ...user as User };
+      const existedRating = updatedUser.movieRatings.find(movieRating => movieRating?.movieId === newRatings.movieId);
+      if (existedRating) {
+        updatedUser.movieRatings = updatedUser.movieRatings.map(movieRating => movieRating?.movieId === newRatings.movieId ? ({ ...movieRating, rating: newRatings.rating }) : movieRating);
+      } else {
+        updatedUser.movieRatings = [
+          ...updatedUser.movieRatings,
+          newRatings,
+        ];
+      }
+      return updatedUser;
+  },
+  target: updateUserFx,
 })

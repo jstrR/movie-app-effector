@@ -10,7 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import ButtonNav from "../buttonNav/ButtonNav";
 import MovieRatings from "../movieRatings/MovieRatings";
-import { IMovieObject } from "../../utils/types";
+import { Movie } from "../../api";
 
 const getDateDisplayValue = (
   date: Date,
@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface IMovieChartCardProps {
-  movieData: IMovieObject;
+  movieData: Movie;
 }
 
 const MovieChartCard: React.FC<IMovieChartCardProps> = ({ movieData }) => {
@@ -70,7 +70,7 @@ const MovieChartCard: React.FC<IMovieChartCardProps> = ({ movieData }) => {
     <Card className={classes.card}>
       <CardMedia
         className={classes.media}
-        image={movieData.poster_path}
+        image={movieData.poster_path || ''}
         title={t(`movieContent|title.${movieData.title}`, {
           nsSeparator: "|",
         })}
@@ -86,18 +86,16 @@ const MovieChartCard: React.FC<IMovieChartCardProps> = ({ movieData }) => {
           })}
         </Typography>
         <Typography gutterBottom className={classes.genres}>
-          {movieData &&
-            movieData.genres &&
-            movieData.genres
-              .map((genre: string) => t(`movieCommon:genres.${genre}`))
-              .join(", ")}
+          {movieData?.genres
+            .map((genre: string) => t(`movieCommon:genres.${genre}`))
+            .join(", ")}
         </Typography>
         <MovieRatings
-          movieid={movieData.id}
+          movieId={movieData.id}
           rating={movieData.vote_average || 0}
           maxrating={10}
-          disabled
           style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}
+          disabled
         />
         <Typography className={classes.date}>
           {getDateDisplayValue(

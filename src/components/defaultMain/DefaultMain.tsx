@@ -3,28 +3,19 @@ import { useStore } from "effector-react";
 
 import MovieSort from "../movieSort/MovieSort";
 import MoviesChart from "../moviesChart/MoviesChart";
-import movieData from "../../utils/movieData";
-import { $moviesStorage, setMoviesDb } from "../../effector/movie";
-import { IMovieObject } from "../../utils/types";
+import { $moviesStorage, fetchAllMoviesFx } from "../../effector/movie";
 
 const DefaultMain = () => {
-  const moviesStorage: Array<IMovieObject> | [] | null= useStore($moviesStorage);
+  const moviesStorage = useStore($moviesStorage);
 
   useEffect(() => {
-    if (moviesStorage && moviesStorage.length) return;
-    const currentMoviesDb = localStorage.getItem("moviesDb")
-      ? JSON.parse(localStorage.getItem("moviesDb") || "")
-      : [];
-    if (!currentMoviesDb || !currentMoviesDb.length) {
-      localStorage.setItem("moviesDb", JSON.stringify(movieData));
-      setMoviesDb(movieData);
-    } else setMoviesDb(currentMoviesDb);
-  }, [moviesStorage]);
+    fetchAllMoviesFx();
+  }, []);
 
   return (
     <main>
       <MovieSort />
-      {moviesStorage ? (
+      {moviesStorage.length ? (
         <MoviesChart moviesStorage={moviesStorage} />
       ) : (
         <p>Loading...</p>

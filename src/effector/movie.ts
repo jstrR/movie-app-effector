@@ -1,31 +1,50 @@
-import { createEvent, restore, sample } from 'effector';
+import { createEvent, createEffect, createStore, sample, attach } from 'effector';
 
-import { IMovieObject, IComment } from "../utils/types";
+import { GqlClient, getAllMovies, getMovie, updateMovie, Movie, Comment, Query, Mutation  } from "../api";
 
-export const setActiveMovie = createEvent<IMovieObject | null>();
-export const setMoviesDb = createEvent<IMovieObject[] | []>();
-export const addComment = createEvent<IComment>();
+export const addComment = createEvent<Comment>();
 export const sortByRating = createEvent<"asc" | "desc">();
 export const sortByDate = createEvent<"asc" | "desc">();
-const updateMovieInDb = createEvent<IMovieObject | null>();
 
-export const $activeMovie = restore(setActiveMovie, null)
-  .on(addComment, (_, comment) => {
-    if (_) {
-      return { ..._, comments: [comment, ...(_.comments || [])] };
-    }
+export const fetchAllMoviesFx = createEffect(async () => {
+  const req: Query = await GqlClient(getAllMovies);
+  return req.allMovies; 
+});
+
+export const fetchMovieFx = createEffect(async (id: String) => {
+  const req: Query = await GqlClient(getMovie, {
+    variables: { id },
   });
+  return req.movie;
+});
 
-export const $moviesStorage = restore(setMoviesDb, JSON.parse(localStorage.getItem("moviesDb") || '[]') || [])
-  .on(updateMovieInDb, (_, updatedMovie) => _?.map((movie: IMovieObject) =>
-    updatedMovie?.id === movie.id ? { ...updatedMovie } : movie
-  ))
-  .on(sortByRating, (_, sortType) => [...(_ || [])].sort((a, b) =>
+export const updateMovieFx = createEffect(async (movie: Movie ) => {
+  const req: Mutation = await GqlClient(updateMovie, {
+    variables: movie,
+  });
+  return req.updateMovie;
+});
+
+export const $activeMovie = createStore<Movie | null>(null)
+  .on(fetchMovieFx.doneData, (_, movie) => movie || null)
+  .on(updateMovieFx.doneData, (_, movie) => movie || null);
+
+export const addMovieFieldFx = attach({
+  effect: updateMovieFx,
+  source: $activeMovie,
+  mapParams: (params: Comment, movie) => {
+    return { ...movie as Movie, comments: movie ? [ ...movie.comments, params] : [params] };
+  },
+});
+
+export const $moviesStorage = createStore<readonly Movie[] | []>([])
+  .on(fetchAllMoviesFx.doneData, (_, movies) => movies || [])
+  .on(sortByRating, (_, sortType) => [..._].sort((a, b) =>
     sortType === "asc"
       ? Number(a.vote_average) - Number(b.vote_average)
       : Number(b.vote_average) - Number(a.vote_average)
   ))
-  .on(sortByDate, (_, sortType) => [...(_ || [])].sort((a, b) => {
+  .on(sortByDate, (_, sortType) => [..._].sort((a, b) => {
     const dateA = new Date(a.release_date || ""),
       dateB = new Date(b.release_date || "");
     return sortType === "asc"
@@ -33,10 +52,7 @@ export const $moviesStorage = restore(setMoviesDb, JSON.parse(localStorage.getIt
       : Number(dateB) - Number(dateA)
   }));
 
-$moviesStorage.watch(movies => localStorage.setItem("moviesDb", JSON.stringify(movies)));
-
 sample({
   clock: addComment,
-  source: $activeMovie,
-  target: updateMovieInDb
-})
+  target: addMovieFieldFx
+});
