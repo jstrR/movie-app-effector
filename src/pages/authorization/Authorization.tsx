@@ -7,10 +7,10 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 
-import SignUpForm from "../components/signUpForm/SignUpForm";
-import LogInForm from "../components/logInForm/LogInForm";
+import SignUpForm from "../../components/signUpForm/SignUpForm";
+import LogInForm from "../../components/logInForm/LogInForm";
 
-import { $isAuthenticated } from "../effector/auth";
+import { $isAuthenticated } from "../../effector/auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {

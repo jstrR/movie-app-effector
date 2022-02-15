@@ -2,14 +2,14 @@ import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import 'effector-logger/inspector';
 
-import "./styles/index.scss";
+import "./index.scss";
 import "./providers/i18n";
 import ViewContextProvider from "./providers/ViewsContextProvider";
 
-import { CircularLoader } from "shared";
+import { CircularLoader } from "shared/components";
 
-const HomePage = lazy(() => import("pages/HomePage"));
-const Authorization = lazy(() => import("pages/Authorization"));
+const HomePage = lazy(() => import("pages/homePage/HomePage"));
+const Authorization = lazy(() => import("pages/authorization/Authorization"));
 
 const App = () => {
   return (
