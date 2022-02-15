@@ -2,9 +2,7 @@ import React from "react";
 import * as ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
 
-import "./i18n";
-import App from "./App";
-import "./index.scss";
+import App from "app";
 
 ReactDOM.render(
   <Router>

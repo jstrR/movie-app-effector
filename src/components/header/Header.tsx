@@ -5,7 +5,7 @@ import { useStore } from "effector-react";
 
 import SwitchLang from "../../common/switchLang/SwitchLang";
 import GoogleLogOut from "../../common/googleLogIn/GoogleLogIn";
-import { ViewContext } from "../../utils/ViewsContextProvider";
+import { ViewContext } from "app";
 import ButtonNav from "../../common/buttonNav/ButtonNav";
 import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
 import FadeMenuNav from "../fadeMenuNav/FadeMenuNav";
