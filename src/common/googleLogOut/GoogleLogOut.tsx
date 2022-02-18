@@ -1,12 +1,12 @@
 import React from "react";
 import { GoogleLogout } from "react-google-login";
 
-import { logOut } from "../../effector/auth";
+import { userModel } from "entities/user";
 
 const GoogleLogOut: React.FC<any> = (props) => {
 
   const handleLogOut = (): void => {
-    logOut();
+    userModel.logOut();
   };
 
   return (

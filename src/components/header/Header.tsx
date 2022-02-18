@@ -6,18 +6,18 @@ import { useStore } from "effector-react";
 import SwitchLang from "../../common/switchLang/SwitchLang";
 import GoogleLogOut from "../../common/googleLogIn/GoogleLogIn";
 import { ViewContext } from "app";
-import ButtonNav from "../../common/buttonNav/ButtonNav";
-import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
+import { ButtonNav } from "shared/components";
+import { ButtonGeneric } from "shared/components";
 import FadeMenuNav from "../fadeMenuNav/FadeMenuNav";
 import "./Header.scss";
-import { $currentUser, $isAuthenticated, logOut } from "../../effector/auth";
+import { userModel } from "entities/user";
 
 const Header = () => {
   const location = useLocation();
   const { t } = useTranslation();
 
-  const user = useStore($currentUser);
-  const isAuthenticated = useStore($isAuthenticated);
+  const user = useStore(userModel.$currentUser);
+  const isAuthenticated = useStore(userModel.$isAuthenticated);
   const viewsContext = useContext(ViewContext);
 
   const mobileControlsView = (
@@ -35,7 +35,7 @@ const Header = () => {
           )}
         />
       ) : (
-        <ButtonGeneric event="logOut" onClick={logOut}>
+        <ButtonGeneric event="logOut" onClick={userModel.logOut}>
           {t("common.logOut")}
         </ButtonGeneric>
       )}

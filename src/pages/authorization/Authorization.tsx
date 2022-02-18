@@ -10,7 +10,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import SignUpForm from "../../components/signUpForm/SignUpForm";
 import LogInForm from "../../components/logInForm/LogInForm";
 
-import { $isAuthenticated } from "../../effector/auth";
+import { userModel } from "entities/user";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +33,7 @@ const Authorization = () => {
   const classes = useStyles();
   let location = useLocation();
 
-  const isAuthenticated: Boolean = useStore($isAuthenticated);
+  const isAuthenticated: Boolean = useStore(userModel.$isAuthenticated);
 
   return (
     <>

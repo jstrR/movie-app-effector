@@ -5,10 +5,10 @@ config:
   immutableTypes: true
   preResolveTypes: true
 generates:
-  src/api/model.graphql.ts:
+  src/shared/api/model.graphql.ts:
     plugins:
       - "typescript"
       - "typescript-operations"
-  src/api/graphql.schema.json:
+  src/shared/api/graphql.schema.json:
     plugins:
       - "introspection"

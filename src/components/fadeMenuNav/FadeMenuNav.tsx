@@ -10,7 +10,7 @@ import Fade from "@material-ui/core/Fade";
 import MenuIcon from "@material-ui/icons/Menu";
 
 import GoogleLogOut from "../../common/googleLogOut/GoogleLogOut";
-import { logOut, $currentUser } from "../../effector/auth";
+import { userModel } from "entities/user";
 
 const stylesUtils = {
   mainColor: "#2196F3",
@@ -21,7 +21,7 @@ const FadeMenuNavigation = () => {
   const open = Boolean(anchorEl);
   const { t } = useTranslation();
 
-  const userToken = useStore($currentUser)?.token;
+  const userToken = useStore(userModel.$currentUser)?.token;
 
   const handleClick = (event: any) => {
     setAnchorEl(event.currentTarget);
@@ -33,7 +33,7 @@ const FadeMenuNavigation = () => {
 
   const handleLogOut = (): void => {
     handleClose();
-    logOut();
+    userModel.logOut();
   };
 
   return (

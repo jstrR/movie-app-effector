@@ -20,8 +20,8 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
-import { $isAuthenticated, $logInError, logIn } from "../../effector/auth";
-import ButtonGeneric from "../../common/buttonGeneric/ButtonGeneric";
+import { userModel } from "entities/user";
+import { ButtonGeneric } from "shared/components";
 import GoogleLogIn from "../../common/googleLogIn/GoogleLogIn";
 import Copyright from "../../common/copyright/Copyright";
 
@@ -76,8 +76,8 @@ const LogInForm = () => {
     { email: "", password: "" }
   );
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const isAuthenticated = useStore($isAuthenticated);
-  const logInError = useStore($logInError);
+  const isAuthenticated = useStore(userModel.$isAuthenticated);
+  const logInError = useStore(userModel.$logInError);
 
   const onChange = (e: React.SyntheticEvent<EventTarget>): void => {
     setUserData({
@@ -91,7 +91,7 @@ const LogInForm = () => {
 
   const formSubmit = (e: React.FormEvent<EventTarget>): void => {
     e.preventDefault();
-    logIn({ email: userData.email, password: userData.password, token: '' });
+    userModel.logIn({ email: userData.email, password: userData.password, token: '' });
   };
 
   useEffect(() => {
@@ -179,7 +179,7 @@ const LogInForm = () => {
               </Typography>
             </Box>
             <Grid container>
-              <GoogleLogIn className={classes.googleBtn} onLogin={logIn}>
+              <GoogleLogIn className={classes.googleBtn} onLogin={userModel.logIn}>
                 {t("login/signupPage:googleBtn.logIn")}
               </GoogleLogIn>
             </Grid>

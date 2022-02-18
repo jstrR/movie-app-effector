@@ -2,18 +2,10 @@ import React from "react";
 import { useStore } from "effector-react";
 
 import { ISessionObject } from "../../utils/types";
-import { $purchaseData } from "../../effector/purchaseData";
-/*const useStyles = makeStyles(theme => ({
-  cardGrid: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(8)
-  }
-}));*/
+import { cinemaSessionsModel } from "entities/cinemaSession";
 
 const Seats = () => {
-  //const classes = useStyles();
-
-  const purchaseData: ISessionObject | undefined = useStore($purchaseData);
+  const purchaseData: ISessionObject | undefined = useStore(cinemaSessionsModel.$purchaseData);
 
   //create redirect
   return (

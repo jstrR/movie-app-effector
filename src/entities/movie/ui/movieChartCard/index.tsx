@@ -1,6 +1,7 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
@@ -8,22 +9,12 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { ButtonNav } from "shared/components";
-//import MovieRatings from "../movieRatings/MovieRatings";
+import { MovieRatings } from "features/movieRatings";
 import { Movie } from "shared/api";
+import { ButtonNav } from "shared/components";
+import { getDateDisplayValue } from "entities/movie/lib";
 
-const getDateDisplayValue = (
-  date: Date,
-  format = localStorage.getItem("i18nextLng")
-): string | null => {
-  return date
-    ? date.toLocaleString((format = "en-US"), {
-        year: "numeric",
-      })
-    : null;
-};
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   card: {
     height: "100%",
     display: "flex",
@@ -55,9 +46,9 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: "#21CBF3",
     },
   },
-}));
+});
 
-interface IMovieChartCardProps {
+type IMovieChartCardProps = {
   movieData: Movie;
 }
 
@@ -90,13 +81,13 @@ export const MovieChartCard: React.FC<IMovieChartCardProps> = ({ movieData }) =>
             .map((genre: string) => t(`movieCommon:genres.${genre}`))
             .join(", ")}
         </Typography>
-        {/* <MovieRatings
+        <MovieRatings
           movieId={movieData.id}
           rating={movieData.vote_average || 0}
           maxrating={10}
           style={{ fontSize: "1.3rem", marginBottom: "0.5rem" }}
           disabled
-        /> */}
+        />
         <Typography className={classes.date}>
           {getDateDisplayValue(
             new Date((movieData && movieData.release_date) || "")
