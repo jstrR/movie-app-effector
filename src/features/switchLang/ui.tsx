@@ -20,7 +20,7 @@ const AntSwitch = withStyles({
   track: { backgroundColor: "#2196F3" },
 })(Switch);
 
-const SwitchLang = () => {
+export const SwitchLang = () => {
   const { i18n } = useTranslation();
   const [lang, setLang] = useState<boolean>(
     localStorage.getItem("i18nextLng") !== "en-US"
@@ -47,4 +47,3 @@ const SwitchLang = () => {
     </Typography>
   );
 };
-export default SwitchLang;

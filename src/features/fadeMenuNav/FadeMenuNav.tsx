@@ -9,7 +9,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Fade from "@material-ui/core/Fade";
 import MenuIcon from "@material-ui/icons/Menu";
 
-import GoogleLogOut from "../../common/googleLogOut/GoogleLogOut";
+import { GoogleLogOut } from "shared/ui";
 import { userModel } from "entities/user";
 
 const stylesUtils = {
@@ -60,7 +60,7 @@ const FadeMenuNavigation = () => {
         </MenuItem>
         {userToken ? (
           <GoogleLogOut
-            onLogoutSuccess={handleLogOut}
+            handleLogOut={handleLogOut}
             render={(renderProps: any) => (
               <MenuItem
                 onClick={renderProps.onClick}

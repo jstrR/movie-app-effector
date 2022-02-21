@@ -11,7 +11,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { MovieRatings } from "features/movieRatings";
 import { Movie } from "shared/api";
-import { ButtonNav } from "shared/components";
+import { ButtonNav } from "shared/ui";
 import { getDateDisplayValue } from "entities/movie/lib";
 
 const useStyles = makeStyles({

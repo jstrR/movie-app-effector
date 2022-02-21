@@ -6,7 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 
-import { ButtonNav } from "shared/components";
+import { ButtonNav } from "shared/ui";
 import { stylesUtils } from "features/comments/lib";
 
 const useStyles = makeStyles(theme => ({

@@ -1,7 +1,7 @@
 import React from "react";
 import { useStore } from "effector-react";
 
-import { ISessionObject } from "../../utils/types";
+import { ISessionObject } from "utils/types";
 import { cinemaSessionsModel } from "entities/cinemaSession";
 
 const Seats = () => {

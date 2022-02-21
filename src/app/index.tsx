@@ -6,7 +6,7 @@ import "./index.scss";
 import "./providers/i18n";
 import ViewContextProvider from "./providers/ViewsContextProvider";
 
-import { CircularLoader } from "shared/components";
+import { CircularLoader } from "shared/ui";
 
 const HomePage = lazy(() => import("pages/homePage/HomePage"));
 const Authorization = lazy(() => import("pages/authorization/Authorization"));

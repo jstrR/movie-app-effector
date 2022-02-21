@@ -16,7 +16,7 @@ import { userModel } from "entities/user";
 import { movieModel } from "entities/movie";
 import { Comments } from "widgets/comments";
 import { MovieRatings } from "features/movieRatings";
-import { ButtonNav } from "shared/components";
+import { ButtonNav } from "shared/ui";
 import { CinemaSessions } from "features/cinemaSessions";
 import { getDateDisplayValue, formatCurrency } from "entities/movie/lib";
 

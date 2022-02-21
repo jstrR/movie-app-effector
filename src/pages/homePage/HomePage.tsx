@@ -1,15 +1,15 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 
-import Header from "../../components/header/Header";
-import Seats from "../../components/seats/Seats";
-import Footer from "../../components/footer/Footer";
+import { Header } from "widgets/header";
+import { Footer } from "shared/ui";
 import NotFound from "../notFound/NotFound";
 
-import { CircularLoader } from "shared/components";
+import { CircularLoader } from "shared/ui";
 
 const MovieChartPage = lazy(() => import("./movieChartPage/MovieChartPage"));
 const MovieCardPage = lazy(() => import("./movieCardPage/MovieCardPage"));
+const Seats = lazy(() => import("./seats/Seats"));
 
 const HomePage = () => (
   <>

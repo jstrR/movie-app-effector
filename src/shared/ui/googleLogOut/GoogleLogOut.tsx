@@ -1,12 +1,9 @@
 import React from "react";
 import { GoogleLogout } from "react-google-login";
 
-import { userModel } from "entities/user";
-
-const GoogleLogOut: React.FC<any> = (props) => {
-
+export const GoogleLogOut: React.FC<any> = (props) => {
   const handleLogOut = (): void => {
-    userModel.logOut();
+    props.onClick();
   };
 
   return (
@@ -17,4 +14,3 @@ const GoogleLogOut: React.FC<any> = (props) => {
     />
   );
 };
-export default GoogleLogOut;

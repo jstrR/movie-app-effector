@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { CircularLoader } from "shared/components";
+import { CircularLoader } from "shared/ui";
 import { movieModel, MovieChartCard } from "entities/movie";
 import { MoviesSort } from "features/moviesSort";
 

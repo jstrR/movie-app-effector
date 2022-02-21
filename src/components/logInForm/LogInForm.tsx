@@ -21,7 +21,7 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 import { userModel } from "entities/user";
-import { ButtonGeneric } from "shared/components";
+import { ButtonGeneric } from "shared/ui";
 import GoogleLogIn from "../../common/googleLogIn/GoogleLogIn";
 import Copyright from "../../common/copyright/Copyright";
 

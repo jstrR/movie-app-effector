@@ -7,7 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { ButtonGeneric } from "shared/components";
+import { ButtonGeneric } from "shared/ui";
 import { Comment } from "shared/api";
 import { movieModel } from "entities/movie";
 import { userModel } from "entities/user";
