@@ -4,3 +4,4 @@ export { CircularLoader } from "./circularLoader/CircularLoader";
 export { Footer } from "./footer/Footer";
 export { GoogleLogOut } from "./googleLogOut/GoogleLogOut";
 export { FadeMenu } from "./fadeMenu/FadeMenu";
+export { Copyright } from "./copyright/Copyright";

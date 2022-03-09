@@ -1,9 +1,9 @@
 import React from "react";
 import { GoogleLogin } from "react-google-login";
 
-import { User } from "../../api";
+import { User } from "shared/api";
 
-const GoogleLogIn: React.FC<any> = ({ className, onLogin }) => {
+export const GoogleLogInButton: React.FC<any> = ({ className, onLogin }) => {
   const googleAuthSuccess = (response: any) => {
     const newUserObj: User = {
       id: response.profileObj.googleId,
@@ -32,4 +32,3 @@ const GoogleLogIn: React.FC<any> = ({ className, onLogin }) => {
     />
   );
 };
-export default GoogleLogIn;

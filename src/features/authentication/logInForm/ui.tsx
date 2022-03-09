@@ -21,9 +21,8 @@ import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 
 import { userModel } from "entities/user";
-import { ButtonGeneric } from "shared/ui";
-import GoogleLogIn from "../../common/googleLogIn/GoogleLogIn";
-import Copyright from "../../common/copyright/Copyright";
+import { ButtonGeneric, Copyright } from "shared/ui";
+import { GoogleLogIn } from "..";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -66,9 +65,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LogInForm = () => {
+export const LogInForm = () => {
   const classes = useStyles();
-  let location = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation(["translaitons", "login/signupPage"]);
   const { from }: any = useMemo(() => location.state || { from: { pathname: "/" } }, [location.state]);
@@ -87,7 +86,7 @@ const LogInForm = () => {
     });
   };
 
-  const [validationError, setValidationError] = useState<boolean>(false);
+  const [validationError, setValidationError] = useState(false);
 
   const formSubmit = (e: React.FormEvent<EventTarget>): void => {
     e.preventDefault();
@@ -199,5 +198,3 @@ const LogInForm = () => {
     </>
   );
 };
-
-export default LogInForm;

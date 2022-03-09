@@ -20,10 +20,9 @@ import IconButton from "@material-ui/core/IconButton";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 
 import { userModel } from "entities/user";
-import { ButtonGeneric } from "shared/ui";
-import GoogleLogIn from "../../common/googleLogIn/GoogleLogIn";
-import Copyright from "../../common/copyright/Copyright";
-import { User } from "../../api";
+import { User } from "shared/api";
+import { ButtonGeneric, Copyright } from "shared/ui";
+import { GoogleLogIn } from "..";
 
 interface IField {
   field: string;
@@ -83,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SignUpForm = () => {
+export const SignUpForm = () => {
   const classes = useStyles();
   const location = useLocation();
   const navigate = useNavigate();
@@ -247,5 +246,3 @@ const SignUpForm = () => {
     </>
   );
 };
-
-export default SignUpForm;
